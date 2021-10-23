@@ -1,0 +1,43 @@
+0x4019a5: retq
+0x4019b1: nop; retq
+0x4019b0: nop; nop; retq
+0x4019a6: mov $0x1,%eax; retq
+0x4019a2: add $0x8,%esp; retq
+0x4019a1: add $0x8,%rsp; retq
+0x4019d1: nop; nop; nop; retq
+0x4019a9: add %al,(%rax); retq
+0x4019bf: xchg %eax,%edx; retq
+0x4019da: xchg %eax,%ecx; retq
+0x4019b6: mov %eax,%edi; nop; retq
+0x4019b5: mov %rax,%rdi; nop; retq
+0x4019dd: pop %rax; nop; nop; retq
+0x4019c8: mov $0x90c78948,%eax; retq
+0x4019dc: mov $0xc3909058,%eax; retq
+0x4019ac: movl $0x90909158,(%rdi); retq
+0x4019d0: pop %rax; nop; nop; nop; retq
+0x4019ce: movl $0x90909058,(%rdi); retq
+0x4019af: xchg %eax,%ecx; nop; nop; retq
+0x4019a4: or %al,%bl; mov $0x1,%eax; retq
+0x4019b3: lea -0x6f3876b8(%rdi),%eax; retq
+0x4019ba: lea -0x6d3876b8(%rdi),%eax; retq
+0x4019c1: lea -0x3ea7a271(%rdi),%eax; retq
+0x4019d5: lea -0x6e3876b8(%rdi),%eax; retq
+0x4019bd: mov %eax,%edi; xchg %eax,%edx; retq
+0x4019bc: mov %rax,%rdi; xchg %eax,%edx; retq
+0x4019d8: mov %eax,%edi; xchg %eax,%ecx; retq
+0x4019d7: mov %rax,%rdi; xchg %eax,%ecx; retq
+0x4019a7: add %eax,(%rax); add %al,(%rax); retq
+0x4019ae: pop %rax; xchg %eax,%ecx; nop; nop; retq
+0x4019c6: rol $0xb8,%ebx; mov %rax,%rdi; nop; retq
+0x4019aa: add %al,%bl; movl $0x90909158,(%rdi); retq
+0x4019c5: pop %rax; rol $0xb8,%ebx; mov %rax,%rdi; nop; retq
+0x40199c: callq 0x400de0 <__printf_chk@plt>; add $0x8,%rsp; retq
+0x4019c2: xchg %ecx,-0x3c3ea7a3(%rdi); mov $0x90c78948,%eax; retq
+0x4019a8: add %al,(%rax); add %al,%bl; movl $0x90909158,(%rdi); retq
+0x4019c4: pop %rbp; pop %rax; rol $0xb8,%ebx; mov %rax,%rdi; nop; retq
+0x401997: mov $0x0,%eax; callq 0x400de0 <__printf_chk@plt>; add $0x8,%rsp; retq
+0x40199a: add %al,(%rax); callq 0x400de0 <__printf_chk@plt>; add $0x8,%rsp; retq
+0x401996: add %bh,0x0(%rax); callq 0x400de0 <__printf_chk@plt>; add $0x8,%rsp; retq
+0x401995: add %al,(%rax); mov $0x0,%eax; callq 0x400de0 <__printf_chk@plt>; add $0x8,%rsp; retq
+0x401998: add %al,(%rax); add %al,(%rax); callq 0x400de0 <__printf_chk@plt>; add $0x8,%rsp; retq
+0x401994: add %al,(%rax); add %bh,0x0(%rax); callq 0x400de0 <__printf_chk@plt>; add $0x8,%rsp; retq

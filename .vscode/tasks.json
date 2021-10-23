@@ -1,0 +1,37 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run exploit",
+            "type": "shell",
+            "command": "./run.sh",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Hex to raw",
+            "type": "shell",
+            "command": "./hex2raw < 4.txt > 4.hex",
+        },
+        {
+            "label": "GAS build",
+            "type": "shell",
+            "command": "rawfilename=${fileDirname}/${fileBasenameNoExtension}; as --gstabs+ ${file} -o $rawfilename.o; ld $rawfilename.o -o $rawfilename",
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "error"
+                }
+            },
+            "presentation": {
+                "focus": true,
+                "panel": "dedicated",
+                "reveal": "silent",
+                "clear": true
+            }
+        },
+    ]
+}

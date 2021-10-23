@@ -1,0 +1,364 @@
+0x400f4a: ret
+0x4023cc: iret
+0x400eb0: repz ret
+0x4019b1: nop; ret
+0x4010f3: ret 0x8548
+0x4019f0: ret 0xc391
+0x4019f6: ret 0xd200
+0x401a36: leave; ret
+0x401a42: ret 0xd208
+0x401a6b: ret 0x79c3
+0x401a86: ret 0xc038
+0x401a96: ret 0x8dc3
+0x401a9b: ret 0xc008
+0x401aab: ret 0xc7c3
+0x401ab7: ret 0xd238
+0x401b14: ret 0x4802
+0x4023ca: ret 0xcf75
+0x4023c1: ret 0x8041
+0x400ee8: pop rbp; ret
+0x401352: pop rsi; ret
+0x401351: pop r14; ret
+0x401902: pop rsp; ret
+0x401901: pop r12; ret
+0x401e2b: pop rbx; ret
+0x40222f: pop r13; ret
+0x40278b: pop rdi; ret
+0x40278a: pop r15; ret
+0x4019b0: nop; nop; ret
+0x401a05: or al,al; ret
+0x401a43: or dl,dl; ret
+0x400eaf: add bl,dh; ret
+0x4019f7: add dl,dl; ret
+0x401a57: and dl,dl; ret
+0x401a87: cmp al,al; ret
+0x401ab8: cmp dl,dl; ret
+0x401abf: sbb cl,cl; ret
+0x4020b1: xor cl,cl; ret
+0x401a19: test bl,bl; ret
+0x401a50: test dl,dl; ret
+0x400c5b: add esp,0x8; ret
+0x400c5a: add rsp,0x8; ret
+0x4019a6: mov eax,0x1; ret
+0x4019ea: add al,0x37; ret
+0x401a12: mov eax,esp; ret
+0x401a11: mov rax,rsp; ret
+0x401a95: mov edx,eax; ret
+0x402ef0: mov eax,0x0; ret
+0x4017a5: add esp,0x38; ret
+0x4017a4: add rsp,0x38; ret
+0x4019a9: add [rax],al; ret
+0x4019bf: xchg edx,eax; ret
+0x4019da: xchg ecx,eax; ret
+0x401a41: leave; ret 0xd208
+0x401b3c: add al,[rax]; ret
+0x4019d1: nop; nop; nop; ret
+0x402113: dec [rax-0x77]; ret
+0x401a3b: or eax,esp; nop; ret
+0x401a3a: or rax,rsp; nop; ret
+0x402c29: fcomip st,st(3); ret
+0x402f6c: fmul [rax-0x7d]; ret
+0x4010b6: pop rbx; pop rbp; ret
+0x401350: pop rbp; pop r14; ret
+0x40134f: pop r13; pop r14; ret
+0x401900: pop rbp; pop r12; ret
+0x4019b6: mov edi,eax; nop; ret
+0x4019b5: mov rdi,rax; nop; ret
+0x401a0a: mov esi,ecx; nop; ret
+0x401a34: shl [rax-0x37],1; ret
+0x40222e: pop rsp; pop r13; ret
+0x40222d: pop r12; pop r13; ret
+0x402789: pop rsi; pop r15; ret
+0x402788: pop r14; pop r15; ret
+0x400eae: add [rax],al; repz ret
+0x4010b5: add [rbx+0x5d],bl; ret
+0x4019dd: pop rax; nop; nop; ret
+0x401a65: xchg esp,eax; nop; ret
+0x401b24: and [rax],al; repz ret
+0x401b23: and [r8],r8b; repz ret
+0x4021a9: mov [rdi+0x8],eax; ret
+0x4021a8: mov [rdi+0x8],rax; ret
+0x40231c: sbb cl,[rax-0x7d]; ret
+0x400ead: add [rax],r8b; repz ret
+0x400f25: nop [rax]; pop rbp; ret
+0x4017a3: add eax,0x38c48348; ret
+0x4019c8: mov eax,0x90c78948; ret
+0x4019dc: mov eax,0xc3909058; ret
+0x4019f4: mov eax,0xd200c289; ret
+0x401a16: mov eax,0xdb84d189; ret
+0x401a46: mov eax,0xc3e08908; ret
+0x401a84: mov eax,0xc038c209; ret
+0x401aa9: mov esi,ecx; ret 0xc7c3
+0x401abe: rcr [rax],1; leave; ret
+0x4023a3: add [rax-0x7d],ecx; ret
+0x4010e1: shl [rbp+0x26],0x89; ret
+0x4019e9: lea eax,[rdi+rsi*1]; ret
+0x4019e8: lea rax,[rdi+rsi*1]; ret
+0x401a03: mov dh,cl; or al,al; ret
+0x401a40: xchg ecx,ecx; ret 0xd208
+0x401b3a: mov [rdx+rax*1],0x0; ret
+0x4024e0: test eax,0x89000002; ret
+0x401100: inc [rbp-0x7ce48b40]; ret
+0x4019ac: mov [rdi],0x90909158; ret
+0x4019ce: mov [rdi],0x90909058; ret
+0x4019ed: mov [rdi],0xc391c289; ret
+0x4019fa: mov [rdi],0xe09948be; ret
+0x401a08: mov [rdi],0xc390ce89; ret
+0x401a0f: mov [rdi],0xc3e08948; ret
+0x401a1e: pop rax; mov eax,esp; ret
+0x401a23: mov [rdi],0xdbc4ce89; ret
+0x401a31: mov [rdi],0xc960d189; ret
+0x401a4c: mov [rdi],0xd284ce8d; ret
+0x401a53: mov [rdi],0xd220d189; ret
+0x401a68: mov [rdi],0x79c3c2a9; ret
+0x401a6f: mov [rdi],0xc0c4ce89; ret
+0x401a9a: or edx,eax; or al,al; ret
+0x401a9f: mov [rdi],0x90ce8925; ret
+0x401aa6: mov [rdi],0xc2ce89d9; ret
+0x401aad: mov [rdi],0xc1e08948; ret
+0x401ab4: mov [rdi],0xd238c289; ret
+0x401abb: mov [rdi],0xc918d189; ret
+0x402e74: mov eax,eax; pop rbx; ret
+0x402e73: mov eax,r8d; pop rbx; ret
+0x402f17: mov eax,ebx; pop rbx; ret
+0x400c58: call rax; add rsp,0x8; ret
+0x400ee6: add [rax],al; pop rbp; ret
+0x400f47: add [rcx],al; pop rbp; ret
+0x4019a4: or bl,al; mov eax,0x1; ret
+0x401a85: or edx,eax; cmp al,al; ret
+0x401a99: xchg [rcx],ecx; ret 0xc008
+0x401b21: add eax,0x2045fe; repz ret
+0x400ee5: add [rax],r8b; pop rbp; ret
+0x4019af: xchg ecx,eax; nop; nop; ret
+0x4019f5: mov edx,eax; add dl,dl; ret
+0x401a55: mov ecx,edx; and dl,dl; ret
+0x401ab6: mov edx,eax; cmp dl,dl; ret
+0x401abd: mov ecx,edx; sbb cl,cl; ret
+0x402ee9: out dx,al; mov eax,0x1; ret
+0x402eee: add bl,al; mov eax,0x0; ret
+0x401a17: mov ecx,edx; test bl,bl; ret
+0x4024df: mov [rcx-0x76fffffe],ch; ret
+0x402c8b: mov [rbx-0x77000000],ah; ret
+0x402c8f: add [rcx+0x3d8d48c3],cl; ret
+0x402f8d: add [rax],al; add bl,dh; ret
+0x400eab: nop [rax+rax*1+0x0]; repz ret
+0x4019b3: lea eax,[rdi-0x6f3876b8]; ret
+0x4019ba: lea eax,[rdi-0x6d3876b8]; ret
+0x4019c1: lea eax,[rdi-0x3ea7a271]; ret
+0x4019d5: lea eax,[rdi-0x6e3876b8]; ret
+0x401a01: lea eax,[rdi-0x3ff73178]; ret
+0x401a1c: lea eax,[rdi-0x3c1f76a8]; ret
+0x401a2a: lea eax,[rdi-0x3c1f76b8]; ret
+0x401a38: lea eax,[rdi-0x6f1ff6b8]; ret
+0x401a3f: lea eax,[rdi-0x2df73d37]; ret
+0x401a5a: lea eax,[rdi-0x6f2e5646]; ret
+0x401a61: lea eax,[rdi-0x6f6b2e77]; ret
+0x401a76: lea eax,[rdi-0x6e2e764f]; ret
+0x401a81: js 0x401a4c <setval_313>; ret
+0x401a7d: lea eax,[rdi-0x36873177]; ret
+0x401a8a: lea eax,[rdi-0x6f1f7eb8]; ret
+0x401a91: lea eax,[rdi-0x3d765141]; ret
+0x401a98: lea eax,[rdi-0x3ff73df7]; ret
+0x401ac2: lea eax,[rdi-0x6f6f2e7f]; ret
+0x4020af: add [rbp+0x30],dh; leave; ret
+0x4023c5: sub eax,0x8c0940f; ret 0xcf75
+0x402f95: sub esp,0x8; add rsp,0x8; ret
+0x402f94: sub rsp,0x8; add rsp,0x8; ret
+0x40134e: pop rsp; pop r13; pop r14; ret
+0x40134d: pop r12; pop r13; pop r14; ret
+0x4017ba: mov eax,0x1; add rsp,0x38; ret
+0x4018ff: pop rbx; pop rbp; pop r12; ret
+0x4019bd: mov edi,eax; xchg edx,eax; ret
+0x4019bc: mov rdi,rax; xchg edx,eax; ret
+0x4019d8: mov edi,eax; xchg ecx,eax; ret
+0x4019d7: mov rdi,rax; xchg ecx,eax; ret
+0x4019ef: mov edx,eax; xchg ecx,eax; ret
+0x401a79: mov ecx,edx; xchg ecx,eax; ret
+0x401b22: inc [rbp+0x20]; add bl,dh; ret
+0x40222c: pop rbp; pop r12; pop r13; ret
+0x402787: pop rbp; pop r14; pop r15; ret
+0x402786: pop r13; pop r14; pop r15; ret
+0x4017bd: add [rax],al; add rsp,0x38; ret
+0x402472: adc [rbx+0x5d],bl; pop r12; ret
+0x402c27: add bl,ch; fcomip st,st(3); ret
+0x402d2d: and [rbx+0x5d],bl; pop r12; ret
+0x402ef1: add [rax],al; add [rax],al; ret
+0x400f23: jmp rax; nop [rax]; pop rbp; ret
+0x4019a7: add [rax],eax; add [rax],al; ret
+0x402f87: nop cs:[rax+rax*1+0x0]; repz ret
+0x400ee3: nop [rax+rax*1+0x0]; pop rbp; ret
+0x4018fe: sbb [rbx+0x5d],0x41; pop rsp; ret
+0x401a20: loopne 0x4019e5 <mid_farm+3>; ret
+0x401a3c: loopne 0x4019ce <setval_100>; ret
+0x400eaa: hlt; nop [rax+rax*1+0x0]; repz ret
+0x401a44: rol bl,cl; mov eax,0xc3e08908; ret
+0x401a94: scas al,es:[rdi]; mov edx,eax; ret
+0x4023c4: clc; sub eax,0x8c0940f; ret 0xcf75
+0x4010b4: add [rax],al; pop rbx; pop rbp; ret
+0x4017a1: add [rbp+0x5],dh; add rsp,0x38; ret
+0x4017b9: add [rax+0x1],bh; add rsp,0x38; ret
+0x4019c6: rol ebx,0xb8; mov rdi,rax; nop; ret
+0x4019e6: add bl,al; lea rax,[rdi+rsi*1]; ret
+0x401a13: loopne 0x4019d8 <addval_121+3>; ret
+0x401a2e: loopne 0x4019f3 <setval_103+6>; ret
+0x401a49: loopne 0x401a0e <setval_375+6>; ret
+0x401a63: mov ecx,edx; xchg esp,eax; nop; ret
+0x401a8e: loopne 0x401a20 <addval_373+4>; ret
+0x401ab1: loopne 0x401a74 <setval_279+5>; ret
+0x4019aa: add bl,al; mov [rdi],0x90909158; ret
+0x4019f8: rol bl,cl; mov [rdi],0xe09948be; ret
+0x401a51: rol bl,cl; mov [rdi],0xd220d189; ret
+0x401ab9: rol bl,cl; mov [rdi],0xc918d189; ret
+0x402f16: out dx,al; mov eax,ebx; pop rbx; ret
+0x402f8c: add [rax],al; add [rax],al; repz ret
+0x4010b3: and [rax],eax; add [rbx+0x5d],bl; ret
+0x4010b0: add esp,0x2118; pop rbx; pop rbp; ret
+0x4010af: add rsp,0x2118; pop rbx; pop rbp; ret
+0x401cdc: add esp,0x4018; pop rbx; pop rbp; ret
+0x401cdb: add rsp,0x4018; pop rbx; pop rbp; ret
+0x4020b0: jne 0x4020e2 <launch+176>; leave; ret
+0x402c8c: movabs ds:0x3d8d48c389000000,eax; ret
+0x402e72: add [rcx+rcx*4-0x40],al; pop rbx; ret
+0x402ee7: or bl,ch; out dx,al; mov eax,0x1; ret
+0x402f85: nop; nop cs:[rax+rax*1+0x0]; repz ret
+0x401b38: and [rax],al; mov [rdx+rax*1],0x0; ret
+0x40222a: or [rbx+0x5d],bl; pop r12; pop r13; ret
+0x402c1c: call 0x400d10 <alarm@plt>; pop rbx; ret
+0x402e71: add al,[rax]; mov eax,r8d; pop rbx; ret
+0x402f14: shl [rsi+rbp*8-0x77],0xd8; pop rbx; ret
+0x400ea9: add ah,dh; nop [rax+rax*1+0x0]; repz ret
+0x401a58: rol bl,cl; lea eax,[rdi-0x6f2e5646]; ret
+0x401a64: rcl [rax+rdx*4-0x56f8383d],1; ret 0x79c3
+0x401b1f: add [rcx+0x2045fe05],ecx; add bl,dh; ret
+0x401cde: sbb [rax+0x0],al; add [rbx+0x5d],bl; ret
+0x40215b: call 0x400dd0 <munmap@plt>; pop rbx; ret
+0x402354: sbb [rbx+0x5d],bl; pop r12; pop r13; ret
+0x4023a2: ins es:[rdi],dx; add [rax-0x7d],ecx; ret
+0x4024dd: ror [rdi],0x88; test eax,0x89000002; ret
+0x402c28: jmp 0x402c09 <init_timeout+11>; repz ret
+0x402ee8: jmp 0x402ed8 <check+14>; mov eax,0x1; ret
+0x402eec: add [rax],al; add bl,al; mov eax,0x0; ret
+0x400c55: shl [rdx+rax*1-0x1],0xd0; add rsp,0x8; ret
+0x400ee1: jmp rax; nop [rax+rax*1+0x0]; pop rbp; ret
+0x401a7f: mov esi,ecx; js 0x401a4c <setval_313>; ret
+0x401b1e: rol [rcx],0x89; add eax,0x2045fe; repz ret
+0x401b35: adc eax,0x2039e6; mov [rdx+rax*1],0x0; ret
+0x4021a5: lea eax,[rdi+0x10]; mov [rdi+0x8],rax; ret
+0x4021a4: lea rax,[rdi+0x10]; mov [rdi+0x8],rax; ret
+0x402c8d: add [rax],al; add [rcx+0x3d8d48c3],cl; ret
+0x402ee4: adc [rbx-0x1114f73f],eax; mov eax,0x1; ret
+0x402f8b: add [rax],al; add [rax],al; add bl,dh; ret
+0x4018fd: in al,dx; sbb [rbx+0x5d],0x41; pop rsp; ret
+0x401ac3: xchg [rcx-0x3c6f6f2f],eax; mov eax,0x1; ret
+0x4020ad: add [rax],al; add [rbp+0x30],dh; leave; ret
+0x402ee6: ror [rax],0xeb; out dx,al; mov eax,0x1; ret
+0x402f92: add [rax],al; sub rsp,0x8; add rsp,0x8; ret
+0x4017b8: add [rax],al; mov eax,0x1; add rsp,0x38; ret
+0x402e6f: mov [rbx+0x2],0x0; mov eax,r8d; pop rbx; ret
+0x401aa1: and eax,0xc390ce89; mov [rdi],0xc2ce89d9; ret
+0x402c25: add [rax],al; add bl,ch; fcomip st,st(3); ret
+0x402e70: rex.XB add al,[r8]; mov eax,r8d; pop rbx; ret
+0x4017bb: add [rax],eax; add [rax],al; add rsp,0x38; ret
+0x401a18: rol [rbx+rbx*8+0x58878dc3],1; mov eax,esp; ret
+0x401a6a: test eax,0xc379c3c2; mov [rdi],0xc0c4ce89; ret
+0x401e26: call 0x400de0 <__printf_chk@plt>; pop rbx; ret
+0x400ea7: and [r8],al; hlt; nop [rax+rax*1+0x0]; repz ret
+0x4017a2: jne 0x4017a9 <scramble+1072>; add rsp,0x38; ret
+0x401a1a: fcmovnb st,st(3); lea eax,[rdi-0x3c1f76a8]; ret
+0x401a28: fcmovnb st,st(3); lea eax,[rdi-0x3c1f76b8]; ret
+0x401ecb: call 0x401bc9 <notify_server>; add rsp,0x8; ret
+0x400ea8: and [rax],al; hlt; nop [rax+rax*1+0x0]; repz ret
+0x400f48: add [rbp-0x3d],ebx; nop [rax+rax*1+0x0]; repz ret
+0x40179f: add [rax],al; add [rbp+0x5],dh; add rsp,0x38; ret
+0x4019e4: add [rax],al; add bl,al; lea rax,[rdi+rsi*1]; ret
+0x4019fc: mov esi,0xc3e09948; lea eax,[rdi-0x3ff73178]; ret
+0x401a5c: mov edx,0xc390d1a9; lea eax,[rdi-0x6f6b2e77]; ret
+0x401a93: mov edi,0xc3c289ae; lea eax,[rdi-0x3ff73df7]; ret
+0x400c56: je 0x400c5a <_init+18>; call rax; add rsp,0x8; ret
+0x4017b7: add eax,[rax]; add [rax+0x1],bh; add rsp,0x38; ret
+0x40199c: call 0x400de0 <__printf_chk@plt>; add rsp,0x8; ret
+0x4019a8: add [rax],al; add bl,al; mov [rdi],0x90909158; ret
+0x4019c2: xchg [rdi-0x3c3ea7a3],ecx; mov eax,0x90c78948; ret
+0x401a7e: xchg [rcx-0x3c368732],ecx; mov eax,0xc038c209; ret
+0x401b36: out 0x39,al; and [rax],al; mov [rdx+rax*1],0x0; ret
+0x4020ae: add [rax],al; jne 0x4020e2 <launch+176>; leave; ret
+0x4020ab: and eax,0x28; jne 0x4020e2 <launch+176>; leave; ret
+0x402f8a: test [rax],al; add [rax],al; add [rax],al; repz ret
+0x400ea5: adc eax,0x204146; hlt; nop [rax+rax*1+0x0]; repz ret
+0x4017b5: call 0x401b77 <Gets>; mov eax,0x1; add rsp,0x38; ret
+0x401a02: xchg [rax-0x3c3ff732],ecx; mov [rdi],0xc390ce89; ret
+0x401a62: xchg [rcx-0x3c6f6b2f],ecx; mov [rdi],0x79c3c2a9; ret
+0x401ac4: adc ecx,0xb8c39090; add [rax],eax; add [rax],al; ret
+0x402111: jmp 0x402112 <stable_launch+43>; dec [rax-0x77]; ret
+0x402c1a: mov edi,ebx; call 0x400d10 <alarm@plt>; pop rbx; ret
+0x402e6e: rex.WXB mov [r11+0x2],0x0; mov eax,r8d; pop rbx; ret
+0x402f15: je 0x402f05 <gencookie+9>; mov eax,ebx; pop rbx; ret
+0x401a39: xchg [rax+0x9],ecx; loopne 0x4019ce <setval_100>; ret
+0x401a56: shl [rax],1; rol bl,cl; lea eax,[rdi-0x6f2e5646]; ret
+0x402159: mov edi,ebx; call 0x400dd0 <munmap@plt>; pop rbx; ret
+0x402158: mov rdi,rbx; call 0x400dd0 <munmap@plt>; pop rbx; ret
+0x402c23: mov ebx,0x0; jmp 0x402c09 <init_timeout+11>; repz ret
+0x402c89: ror [rdi],0x88; movabs ds:0x3d8d48c389000000,eax; ret
+0x4018fa: ror [rax-0x7d],0xec; sbb [rbx+0x5d],0x41; pop rsp; ret
+0x401a1d: xchg [rax-0x77],ebx; loopne 0x4019e5 <mid_farm+3>; ret
+0x401a6d: jns 0x401a32 <setval_178+1>; mov [rdi],0xc0c4ce89; ret
+0x401b20: mov [rip+0x2045fe],eax # 0x606124 <gets_cnt>; repz ret
+0x401b1c: and [rbx+0x58901c0],al; inc [rbp+0x20]; add bl,dh; ret
+0x4020a9: xor eax,ds:0x28; jne 0x4020e2 <launch+176>; leave; ret
+0x4020a8: xor rax,ds:0x28; jne 0x4020e2 <launch+176>; leave; ret
+0x4020a7: xor rax,fs:0x28; jne 0x4020e2 <launch+176>; leave; ret
+0x40277f: movabs al,ds:0x5d415c415d5b0000; pop r14; pop r15; ret
+0x402c26: add [rax],al; jmp 0x402c09 <init_timeout+11>; repz ret
+0x402ee5: add ecx,0x8; jmp 0x402ed8 <check+14>; mov eax,0x1; ret
+0x401a2b: xchg [rax-0x77],ecx; loopne 0x4019f3 <setval_103+6>; ret
+0x401a5b: xchg [rdx-0x3c6f2e57],edi; lea eax,[rdi-0x6f6b2e77]; ret
+0x401a77: xchg [rcx-0x3c6e2e77],esi; lea eax,[rdi-0x36873177]; ret
+0x401a8b: xchg [rax-0x7f],ecx; loopne 0x401a20 <addval_373+4>; ret
+0x401a92: xchg [rdi-0x3c3d7652],edi; lea eax,[rdi-0x3ff73df7]; ret
+0x4021a2: add [rax],al; lea rax,[rdi+0x10]; mov [rdi+0x8],rax; ret
+0x401bc3: loopne 0x401c20 <notify_server+87>; pop rbp; pop r12; ret
+0x401e21: mov eax,0x0; call 0x400de0 <__printf_chk@plt>; pop rbx; ret
+0x40239f: add [rax-0x73],cl; ins es:[rdi],dx; add [rax-0x7d],ecx; ret
+0x40239e: add [r8-0x73],r9b; ins es:[rdi],dx; add [rax-0x7d],ecx; ret
+0x401e24: add [rax],al; call 0x400de0 <__printf_chk@plt>; pop rbx; ret
+0x401ec6: mov edi,0x0; call 0x401bc9 <notify_server>; add rsp,0x8; ret
+0x400c52: add [rax-0x7b],cl; shl [rdx+rax*1-0x1],0xd0; add rsp,0x8; ret
+0x4017a0: add [rax],al; jne 0x4017a9 <scramble+1072>; add rsp,0x38; ret
+0x40179d: and eax,0x28; jne 0x4017a9 <scramble+1072>; add rsp,0x38; ret
+0x4019ff: loopne 0x4019c4 <addval_291+3>; lea eax,[rdi-0x3ff73178]; ret
+0x401ec9: add [rax],al; call 0x401bc9 <notify_server>; add rsp,0x8; ret
+0x40219d: mov [rdi+0x4],0x0; lea rax,[rdi+0x10]; mov [rdi+0x8],rax; ret
+0x400f46: and [rax],al; add [rbp-0x3d],ebx; nop [rax+rax*1+0x0]; repz ret
+0x400f45: and [r8],r8b; add [rbp-0x3d],ebx; nop [rax+rax*1+0x0]; repz ret
+0x401997: mov eax,0x0; call 0x400de0 <__printf_chk@plt>; add rsp,0x8; ret
+0x400f42: mov [rip+0x20457f],0x1 # 0x6054c8 <completed.7698>; pop rbp; ret
+0x40179b: xor esi,ds:0x28; jne 0x4017a9 <scramble+1072>; add rsp,0x38; ret
+0x40179a: xor rsi,ds:0x28; jne 0x4017a9 <scramble+1072>; add rsp,0x38; ret
+0x401799: xor rsi,fs:0x28; jne 0x4017a9 <scramble+1072>; add rsp,0x38; ret
+0x40199a: add [rax],al; call 0x400de0 <__printf_chk@plt>; add rsp,0x8; ret
+0x401a5e: rcl [rax-0x7678723d],1; rcl [rax+rdx*4-0x56f8383d],1; ret 0x79c3
+0x401e20: add [rax+0x0],bh; call 0x400de0 <__printf_chk@plt>; pop rbx; ret
+0x402c87: inc [rbp-0x5c77f040]; add [rax],al; add [rcx+0x3d8d48c3],cl; ret
+0x400ea4: call [rip+0x204146] # 0x604ff0; hlt; nop [rax+rax*1+0x0]; repz ret
+0x4019fe: cdq; loopne 0x4019c4 <addval_291+3>; lea eax,[rdi-0x3ff73178]; ret
+0x4019fd: cqo; loopne 0x4019c4 <addval_291+3>; lea eax,[rdi-0x3ff73178]; ret
+0x400f43: add eax,0x20457f; add [rbp-0x3d],ebx; nop [rax+rax*1+0x0]; repz ret
+0x401b1d: add eax,0x1; mov [rip+0x2045fe],eax # 0x606124 <gets_cnt>; repz ret
+0x401996: add [rax+0x0],bh; call 0x400de0 <__printf_chk@plt>; add rsp,0x8; ret
+0x40239b: cmove ecx,[rax-0x72b7ffbb]; ins es:[rdi],dx; add [rax-0x7d],ecx; ret
+0x402c24: add [rax],al; add [rax],al; jmp 0x402c09 <init_timeout+11>; repz ret
+0x401a74: rol bl,0x8d; xchg [rcx-0x3c6e2e77],esi; lea eax,[rdi-0x36873177]; ret
+0x401a88: rol bl,0x8d; xchg [rax-0x7f],ecx; loopne 0x401a20 <addval_373+4>; ret
+0x401a8d: and eax,0x878dc390; mov edi,0xc3c289ae; lea eax,[rdi-0x3ff73df7]; ret
+0x401b34: lea edx,[rip+0x2039e6] # 0x605520 <gets_buf>; mov [rdx+rax*1],0x0; ret
+0x401b33: lea rdx,[rip+0x2039e6] # 0x605520 <gets_buf>; mov [rdx+rax*1],0x0; ret
+0x402c20: call [rbx-0x3d]; mov ebx,0x0; jmp 0x402c09 <init_timeout+11>; repz ret
+0x401a5d: test eax,0x8dc390d1; xchg [rcx-0x3c6f6b2f],ecx; mov [rdi],0x79c3c2a9; ret
+0x401b32: cwde; lea rdx,[rip+0x2039e6] # 0x605520 <gets_buf>; mov [rdx+rax*1],0x0; ret
+0x401b31: cdqe; lea rdx,[rip+0x2039e6] # 0x605520 <gets_buf>; mov [rdx+rax*1],0x0; ret
+0x401a8c: and rax,0xffffffff878dc390; mov edi,0xc3c289ae; lea eax,[rdi-0x3ff73df7]; ret
+0x402c84: call 0xffffffff86402c6a; ror [rdi],0x88; movabs ds:0x3d8d48c389000000,eax; ret
+0x401b1b: adc [rax],esp; add eax,0x1; mov [rip+0x2045fe],eax # 0x606124 <gets_cnt>; repz ret
+0x401b19: mov [rcx+rdx*1],0x20; add eax,0x1; mov [rip+0x2045fe],eax # 0x606124 <gets_cnt>; repz ret
+0x401b2d: add [rbp-0x67b7bffc],cl; lea rdx,[rip+0x2039e6] # 0x605520 <gets_buf>; mov [rdx+rax*1],0x0; ret
+0x400f3d: call 0x400ec0 <deregister_tm_clones>; mov [rip+0x20457f],0x1 # 0x6054c8 <completed.7698>; pop rbp; ret

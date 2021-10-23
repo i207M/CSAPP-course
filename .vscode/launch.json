@@ -1,0 +1,62 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "GDB-ctarget",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/ctarget",
+            "args": [
+                "-q",
+                "-i",
+                "3.hex"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Hex to raw"
+        },
+        {
+            "name": "GDB-rtarget",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/rtarget",
+            "args": [
+                "-q",
+                "-i",
+                "4.hex"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Hex to raw"
+        },
+        {
+            "request": "launch",
+            "type": "gdb",
+            "name": "GDB-GAS",
+            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "stopOnEntry": false,
+            "preLaunchTask": "GAS build"
+        },
+    ]
+}

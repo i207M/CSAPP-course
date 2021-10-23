@@ -1,0 +1,3 @@
+comp:
+    popq %rdi
+    ret
