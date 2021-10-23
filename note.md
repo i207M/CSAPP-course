@@ -1,4 +1,6 @@
 b *(0x4017c3)
+run -q -i 5.hex
+set disassembly-flavor att
 
 ## Level 1
 

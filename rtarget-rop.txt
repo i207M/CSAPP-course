@@ -1,43 +1,169 @@
 0x4019a5: retq
 0x4019b1: nop; retq
+0x4019f0: retq $0xc391
+0x4019f6: retq $0xd200
+0x401a36: leaveq; retq
+0x401a42: retq $0xd208
+0x401a6b: retq $0x79c3
+0x401a86: retq $0xc038
+0x401a96: retq $0x8dc3
+0x401a9b: retq $0xc008
+0x401aab: retq $0xc7c3
+0x401ab7: retq $0xd238
 0x4019b0: nop; nop; retq
+0x401a05: or %al,%al; retq
+0x401a43: or %dl,%dl; retq
+0x4019f7: add %dl,%dl; retq
+0x401a57: and %dl,%dl; retq
+0x401a87: cmp %al,%al; retq
+0x401ab8: cmp %dl,%dl; retq
+0x401abf: sbb %cl,%cl; retq
+0x401a19: test %bl,%bl; retq
+0x401a50: test %dl,%dl; retq
 0x4019a6: mov $0x1,%eax; retq
 0x4019a2: add $0x8,%esp; retq
 0x4019a1: add $0x8,%rsp; retq
 0x4019d1: nop; nop; nop; retq
+0x4019ea: add $0x37,%al; retq
+0x401a12: mov %esp,%eax; retq
+0x401a11: mov %rsp,%rax; retq
+0x401a95: mov %eax,%edx; retq
 0x4019a9: add %al,(%rax); retq
 0x4019bf: xchg %eax,%edx; retq
 0x4019da: xchg %eax,%ecx; retq
+0x401a41: leaveq; retq $0xd208
+0x401a34: shll -0x37(%rax); retq
+0x401a3b: or %esp,%eax; nop; retq
+0x401a3a: or %rsp,%rax; nop; retq
 0x4019b6: mov %eax,%edi; nop; retq
 0x4019b5: mov %rax,%rdi; nop; retq
 0x4019dd: pop %rax; nop; nop; retq
+0x401a0a: mov %ecx,%esi; nop; retq
+0x401a65: xchg %eax,%esp; nop; retq
+0x401abe: rcrl (%rax); leaveq; retq
 0x4019c8: mov $0x90c78948,%eax; retq
 0x4019dc: mov $0xc3909058,%eax; retq
+0x4019f4: mov $0xd200c289,%eax; retq
+0x401a16: mov $0xdb84d189,%eax; retq
+0x401a46: mov $0xc3e08908,%eax; retq
+0x401a84: mov $0xc038c209,%eax; retq
+0x401aa9: mov %ecx,%esi; retq $0xc7c3
+0x4019e9: lea (%rdi,%rsi,1),%eax; retq
+0x4019e8: lea (%rdi,%rsi,1),%rax; retq
+0x401a40: xchg %ecx,%ecx; retq $0xd208
 0x4019ac: movl $0x90909158,(%rdi); retq
 0x4019d0: pop %rax; nop; nop; nop; retq
 0x4019ce: movl $0x90909058,(%rdi); retq
+0x4019ed: movl $0xc391c289,(%rdi); retq
+0x4019fa: movl $0xe09948be,(%rdi); retq
+0x401a03: mov %cl,%dh; or %al,%al; retq
+0x401a08: movl $0xc390ce89,(%rdi); retq
+0x401a0f: movl $0xc3e08948,(%rdi); retq
+0x401a1e: pop %rax; mov %esp,%eax; retq
+0x401a23: movl $0xdbc4ce89,(%rdi); retq
+0x401a31: movl $0xc960d189,(%rdi); retq
+0x401a4c: movl $0xd284ce8d,(%rdi); retq
+0x401a53: movl $0xd220d189,(%rdi); retq
+0x401a68: movl $0x79c3c2a9,(%rdi); retq
+0x401a6f: movl $0xc0c4ce89,(%rdi); retq
+0x401a9f: movl $0x90ce8925,(%rdi); retq
+0x401aa6: movl $0xc2ce89d9,(%rdi); retq
+0x401aad: movl $0xc1e08948,(%rdi); retq
+0x401ab4: movl $0xd238c289,(%rdi); retq
+0x401abb: movl $0xc918d189,(%rdi); retq
 0x4019af: xchg %eax,%ecx; nop; nop; retq
+0x401a81: js 0x401a4c <setval_313>; retq
+0x401a9a: or %eax,%edx; or %al,%al; retq
+0x401a99: xchg %ecx,(%rcx); retq $0xc008
 0x4019a4: or %al,%bl; mov $0x1,%eax; retq
+0x401a85: or %eax,%edx; cmp %al,%al; retq
 0x4019b3: lea -0x6f3876b8(%rdi),%eax; retq
 0x4019ba: lea -0x6d3876b8(%rdi),%eax; retq
 0x4019c1: lea -0x3ea7a271(%rdi),%eax; retq
 0x4019d5: lea -0x6e3876b8(%rdi),%eax; retq
+0x4019f5: mov %eax,%edx; add %dl,%dl; retq
+0x401a01: lea -0x3ff73178(%rdi),%eax; retq
+0x401a1c: lea -0x3c1f76a8(%rdi),%eax; retq
+0x401a2a: lea -0x3c1f76b8(%rdi),%eax; retq
+0x401a38: lea -0x6f1ff6b8(%rdi),%eax; retq
+0x401a3f: lea -0x2df73d37(%rdi),%eax; retq
+0x401a55: mov %edx,%ecx; and %dl,%dl; retq
+0x401a5a: lea -0x6f2e5646(%rdi),%eax; retq
+0x401a61: lea -0x6f6b2e77(%rdi),%eax; retq
+0x401a76: lea -0x6e2e764f(%rdi),%eax; retq
+0x401a7d: lea -0x36873177(%rdi),%eax; retq
+0x401a8a: lea -0x6f1f7eb8(%rdi),%eax; retq
+0x401a91: lea -0x3d765141(%rdi),%eax; retq
+0x401a98: lea -0x3ff73df7(%rdi),%eax; retq
+0x401ab6: mov %eax,%edx; cmp %dl,%dl; retq
+0x401abd: mov %edx,%ecx; sbb %cl,%cl; retq
+0x401ac2: lea -0x6f6f2e7f(%rdi),%eax; retq
+0x401a17: mov %edx,%ecx; test %bl,%bl; retq
+0x401a20: loopne 0x4019e5 <mid_farm+3>; retq
+0x401a3c: loopne 0x4019ce <setval_100>; retq
 0x4019bd: mov %eax,%edi; xchg %eax,%edx; retq
 0x4019bc: mov %rax,%rdi; xchg %eax,%edx; retq
 0x4019d8: mov %eax,%edi; xchg %eax,%ecx; retq
 0x4019d7: mov %rax,%rdi; xchg %eax,%ecx; retq
+0x4019ef: mov %eax,%edx; xchg %eax,%ecx; retq
+0x401a79: mov %edx,%ecx; xchg %eax,%ecx; retq
+0x401a13: loopne 0x4019d8 <addval_121+3>; retq
+0x401a2e: loopne 0x4019f3 <setval_103+6>; retq
+0x401a49: loopne 0x401a0e <setval_375+6>; retq
+0x401a8e: loopne 0x401a20 <addval_373+4>; retq
+0x401ab1: loopne 0x401a74 <setval_279+5>; retq
 0x4019a7: add %eax,(%rax); add %al,(%rax); retq
+0x401a44: rol %cl,%bl; mov $0xc3e08908,%eax; retq
 0x4019ae: pop %rax; xchg %eax,%ecx; nop; nop; retq
 0x4019c6: rol $0xb8,%ebx; mov %rax,%rdi; nop; retq
+0x401a63: mov %edx,%ecx; xchg %eax,%esp; nop; retq
+0x401a94: scas %es:(%rdi),%al; mov %eax,%edx; retq
+0x4019e6: add %al,%bl; lea (%rdi,%rsi,1),%rax; retq
 0x4019aa: add %al,%bl; movl $0x90909158,(%rdi); retq
+0x4019f8: rol %cl,%bl; movl $0xe09948be,(%rdi); retq
+0x401a51: rol %cl,%bl; movl $0xd220d189,(%rdi); retq
+0x401ab9: rol %cl,%bl; movl $0xc918d189,(%rdi); retq
+0x401a64: rcll -0x56f8383d(%rax,%rdx,4); retq $0x79c3
+0x401a58: rol %cl,%bl; lea -0x6f2e5646(%rdi),%eax; retq
+0x401a7f: mov %ecx,%esi; js 0x401a4c <setval_313>; retq
+0x401a18: roll 0x58878dc3(%rbx,%rbx,8); mov %esp,%eax; retq
 0x4019c5: pop %rax; rol $0xb8,%ebx; mov %rax,%rdi; nop; retq
+0x401aa1: and $0xc390ce89,%eax; movl $0xc2ce89d9,(%rdi); retq
+0x401a1a: fcmovnb %st(3),%st; lea -0x3c1f76a8(%rdi),%eax; retq
+0x401a28: fcmovnb %st(3),%st; lea -0x3c1f76b8(%rdi),%eax; retq
+0x401a6a: test $0xc379c3c2,%eax; movl $0xc0c4ce89,(%rdi); retq
 0x40199c: callq 0x400de0 <__printf_chk@plt>; add $0x8,%rsp; retq
+0x4019fc: mov $0xc3e09948,%esi; lea -0x3ff73178(%rdi),%eax; retq
+0x401a5c: mov $0xc390d1a9,%edx; lea -0x6f6b2e77(%rdi),%eax; retq
+0x401a93: mov $0xc3c289ae,%edi; lea -0x3ff73df7(%rdi),%eax; retq
 0x4019c2: xchg %ecx,-0x3c3ea7a3(%rdi); mov $0x90c78948,%eax; retq
+0x401a39: xchg %ecx,0x9(%rax); loopne 0x4019ce <setval_100>; retq
+0x401a7e: xchg %ecx,-0x3c368732(%rcx); mov $0xc038c209,%eax; retq
+0x4019e4: add %al,(%rax); add %al,%bl; lea (%rdi,%rsi,1),%rax; retq
+0x401a1d: xchg %ebx,-0x77(%rax); loopne 0x4019e5 <mid_farm+3>; retq
 0x4019a8: add %al,(%rax); add %al,%bl; movl $0x90909158,(%rdi); retq
+0x401a02: xchg %ecx,-0x3c3ff732(%rax); movl $0xc390ce89,(%rdi); retq
+0x401a56: shll (%rax); rol %cl,%bl; lea -0x6f2e5646(%rdi),%eax; retq
+0x401a62: xchg %ecx,-0x3c6f6b2f(%rcx); movl $0x79c3c2a9,(%rdi); retq
+0x401a6d: jns 0x401a32 <setval_178+1>; movl $0xc0c4ce89,(%rdi); retq
+0x401a2b: xchg %ecx,-0x77(%rax); loopne 0x4019f3 <setval_103+6>; retq
+0x401a8b: xchg %ecx,-0x7f(%rax); loopne 0x401a20 <addval_373+4>; retq
 0x4019c4: pop %rbp; pop %rax; rol $0xb8,%ebx; mov %rax,%rdi; nop; retq
+0x401a5b: xchg %edi,-0x3c6f2e57(%rdx); lea -0x6f6b2e77(%rdi),%eax; retq
+0x401a77: xchg %esi,-0x3c6e2e77(%rcx); lea -0x36873177(%rdi),%eax; retq
+0x401a92: xchg %edi,-0x3c3d7652(%rdi); lea -0x3ff73df7(%rdi),%eax; retq
+0x4019ff: loopne 0x4019c4 <addval_291+3>; lea -0x3ff73178(%rdi),%eax; retq
+0x401a5e: rcll -0x7678723d(%rax); rcll -0x56f8383d(%rax,%rdx,4); retq $0x79c3
 0x401997: mov $0x0,%eax; callq 0x400de0 <__printf_chk@plt>; add $0x8,%rsp; retq
 0x40199a: add %al,(%rax); callq 0x400de0 <__printf_chk@plt>; add $0x8,%rsp; retq
+0x4019fe: cltd; loopne 0x4019c4 <addval_291+3>; lea -0x3ff73178(%rdi),%eax; retq
+0x4019fd: cqto; loopne 0x4019c4 <addval_291+3>; lea -0x3ff73178(%rdi),%eax; retq
 0x401996: add %bh,0x0(%rax); callq 0x400de0 <__printf_chk@plt>; add $0x8,%rsp; retq
+0x401a88: rol $0x8d,%bl; xchg %ecx,-0x7f(%rax); loopne 0x401a20 <addval_373+4>; retq
+0x401a74: rol $0x8d,%bl; xchg %esi,-0x3c6e2e77(%rcx); lea -0x36873177(%rdi),%eax; retq
+0x401a8d: and $0x878dc390,%eax; mov $0xc3c289ae,%edi; lea -0x3ff73df7(%rdi),%eax; retq
+0x401a5d: test $0x8dc390d1,%eax; xchg %ecx,-0x3c6f6b2f(%rcx); movl $0x79c3c2a9,(%rdi); retq
+0x401a8c: and $0xffffffff878dc390,%rax; mov $0xc3c289ae,%edi; lea -0x3ff73df7(%rdi),%eax; retq
 0x401995: add %al,(%rax); mov $0x0,%eax; callq 0x400de0 <__printf_chk@plt>; add $0x8,%rsp; retq
 0x401998: add %al,(%rax); add %al,(%rax); callq 0x400de0 <__printf_chk@plt>; add $0x8,%rsp; retq
 0x401994: add %al,(%rax); add %bh,0x0(%rax); callq 0x400de0 <__printf_chk@plt>; add $0x8,%rsp; retq

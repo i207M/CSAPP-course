@@ -35,7 +35,7 @@
             "args": [
                 "-q",
                 "-i",
-                "4.hex"
+                "5.hex"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

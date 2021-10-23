@@ -1,2 +1,2 @@
 #!/bin/sh
-cat 4.txt | ./hex2raw | ./rtarget -q
+cat 5.txt | ./hex2raw | ./rtarget -q
