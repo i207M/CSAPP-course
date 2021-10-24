@@ -31,3 +31,7 @@ set disassembly-flavor att
 需要注意movl
 
 要执行多条语句
+
+不能有0a！！！0a是换行！！！
+
+字符串后面要跟0！

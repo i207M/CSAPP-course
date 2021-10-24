@@ -38,7 +38,7 @@
 0x4019b6: mov %eax,%edi; nop; retq
 0x4019b5: mov %rax,%rdi; nop; retq  // !!!  只有这一个用来改rdi
 0x4019dd: pop %rax; nop; nop; retq  // !!! 任意改rax
-0x401a0a: mov %ecx,%esi; nop; retq  // 改esi
+0x401a0a: mov %ecx,%esi; nop; retq  // 改esi // 不能用
 0x401a65: xchg %eax,%esp; nop; retq
 0x401abe: rcrl (%rax); leaveq; retq
 0x4019c8: mov $0x90c78948,%eax; retq
@@ -47,7 +47,7 @@
 0x401a16: mov $0xdb84d189,%eax; retq
 0x401a46: mov $0xc3e08908,%eax; retq
 0x401a84: mov $0xc038c209,%eax; retq
-0x401aa9: mov %ecx,%esi; retq $0xc7c3
+0x401aa9: mov %ecx,%esi; retq $0xc7c3  // 改esi
 0x4019e9: lea (%rdi,%rsi,1),%eax; retq
 0x4019e8: lea (%rdi,%rsi,1),%rax; retq  // !!!  用来做加法
 0x401a40: xchg %ecx,%ecx; retq $0xd208
