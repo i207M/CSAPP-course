@@ -49,10 +49,10 @@
 0x401a84: mov $0xc038c209,%eax; retq
 0x401aa9: mov %ecx,%esi; retq $0xc7c3
 0x4019e9: lea (%rdi,%rsi,1),%eax; retq
-0x4019e8: lea (%rdi,%rsi,1),%rax; retq
+0x4019e8: lea (%rdi,%rsi,1),%rax; retq  // !!!
 0x401a40: xchg %ecx,%ecx; retq $0xd208
 0x4019ac: movl $0x90909158,(%rdi); retq
-0x4019d0: pop %rax; nop; nop; nop; retq
+0x4019d0: pop %rax; nop; nop; nop; retq  // !!!
 0x4019ce: movl $0x90909058,(%rdi); retq
 0x4019ed: movl $0xc391c289,(%rdi); retq
 0x4019fa: movl $0xe09948be,(%rdi); retq
