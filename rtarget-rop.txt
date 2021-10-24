@@ -22,23 +22,23 @@
 0x401a50: test %dl,%dl; retq
 0x4019a6: mov $0x1,%eax; retq
 0x4019a2: add $0x8,%esp; retq
-0x4019a1: add $0x8,%rsp; retq
+0x4019a1: add $0x8,%rsp; retq  // !!!  存数据的空间
 0x4019d1: nop; nop; nop; retq
 0x4019ea: add $0x37,%al; retq
 0x401a12: mov %esp,%eax; retq
-0x401a11: mov %rsp,%rax; retq
-0x401a95: mov %eax,%edx; retq
+0x401a11: mov %rsp,%rax; retq  // !!!
+0x401a95: mov %eax,%edx; retq  // 把eax暂存edx
 0x4019a9: add %al,(%rax); retq
 0x4019bf: xchg %eax,%edx; retq
-0x4019da: xchg %eax,%ecx; retq
+0x4019da: xchg %eax,%ecx; retq  // 改ecx
 0x401a41: leaveq; retq $0xd208
 0x401a34: shll -0x37(%rax); retq
 0x401a3b: or %esp,%eax; nop; retq
 0x401a3a: or %rsp,%rax; nop; retq
 0x4019b6: mov %eax,%edi; nop; retq
-0x4019b5: mov %rax,%rdi; nop; retq
-0x4019dd: pop %rax; nop; nop; retq
-0x401a0a: mov %ecx,%esi; nop; retq
+0x4019b5: mov %rax,%rdi; nop; retq  // !!!  只有这一个用来改rdi
+0x4019dd: pop %rax; nop; nop; retq  // !!! 任意改rax
+0x401a0a: mov %ecx,%esi; nop; retq  // 改esi
 0x401a65: xchg %eax,%esp; nop; retq
 0x401abe: rcrl (%rax); leaveq; retq
 0x4019c8: mov $0x90c78948,%eax; retq
@@ -49,10 +49,10 @@
 0x401a84: mov $0xc038c209,%eax; retq
 0x401aa9: mov %ecx,%esi; retq $0xc7c3
 0x4019e9: lea (%rdi,%rsi,1),%eax; retq
-0x4019e8: lea (%rdi,%rsi,1),%rax; retq  // !!!
+0x4019e8: lea (%rdi,%rsi,1),%rax; retq  // !!!  用来做加法
 0x401a40: xchg %ecx,%ecx; retq $0xd208
 0x4019ac: movl $0x90909158,(%rdi); retq
-0x4019d0: pop %rax; nop; nop; nop; retq  // !!!
+0x4019d0: pop %rax; nop; nop; nop; retq  // !!!  改rax
 0x4019ce: movl $0x90909058,(%rdi); retq
 0x4019ed: movl $0xc391c289,(%rdi); retq
 0x4019fa: movl $0xe09948be,(%rdi); retq
@@ -71,7 +71,7 @@
 0x401aad: movl $0xc1e08948,(%rdi); retq
 0x401ab4: movl $0xd238c289,(%rdi); retq
 0x401abb: movl $0xc918d189,(%rdi); retq
-0x4019af: xchg %eax,%ecx; nop; nop; retq
+0x4019af: xchg %eax,%ecx; nop; nop; retq  // 交换改ecx
 0x401a81: js 0x401a4c <setval_313>; retq
 0x401a9a: or %eax,%edx; or %al,%al; retq
 0x401a99: xchg %ecx,(%rcx); retq $0xc008
