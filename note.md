@@ -1,6 +1,6 @@
+set disassembly-flavor att
 b *(0x4017c3)
 run -q -i 5.hex
-set disassembly-flavor att
 
 ## Phase 1
 
@@ -24,14 +24,11 @@ set disassembly-flavor att
 
 ## Phase 5
 
-注意，会有重复使用的指令
+- 注意，会有重复使用的指令
+- 会用到functional op
+- 需要注意movl
+- 要执行多条语句
+- 不能有0a！！！0a是换行！！！
+- 字符串后面要跟0！
 
-会用到functional op
-
-需要注意movl
-
-要执行多条语句
-
-不能有0a！！！0a是换行！！！
-
-字符串后面要跟0！
+b1 19 40 00 00 00 00 00 /* 0x4019b1: nop; retq  垃圾 */
