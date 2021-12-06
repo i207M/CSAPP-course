@@ -2,7 +2,9 @@
 *.out
 *.ans
 *.zip
+.vscode/
 traces/
+test.cpp
 
 # Prerequisites
 *.d
