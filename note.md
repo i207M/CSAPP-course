@@ -7,6 +7,23 @@ a allocate (index) (size)
 r reallocate (index) (size)
 f free (index)
 
+```
+Results for libc malloc:
+trace  valid  util     ops      secs  Kops
+ 0       yes    0%    5694  0.000507 11240
+ 1       yes    0%    5848  0.000358 16340
+ 2       yes    0%    6648  0.001075  6182
+ 3       yes    0%    5380  0.001083  4969
+ 4       yes    0%   14400  0.000627 22952
+ 5       yes    0%    4800  0.001353  3548
+ 6       yes    0%    4800  0.001004  4780
+ 7       yes    0%   12000  0.000737 16293
+ 8       yes    0%   24000  0.001112 21573
+ 9       yes    0%   14401  0.001999  7203
+10       yes    0%   14401  0.000485 29693
+Total           0%  112372  0.010340 10867
+```
+
 1 << 12
 ```
  0       yes   97%    5694  0.000547 10411
@@ -44,3 +61,14 @@ Total          95%  112372  0.007105 15817
 
 Perf index = 57 (util) + 40 (thru) = 97/100
 ```
+
+第10个点realloc2：reallocate一大段，然后盖一个小的，然后再reallocate
+第8个点binary2：先allocate 112+16，free，再allocate 128
+现在Kops很高，我们可以尝试牺牲一点性能，来换util
+
+需要做的优化：
+
+- 去掉footer
+- 还剩一个bit，可以用它来实现：当某个块第偶数次reallocate时，加上padding
+
+现在，加速不是我们的主要目的。

@@ -38,10 +38,10 @@ team_t team = {
 /* rounds up to the nearest multiple of ALIGNMENT */
 #define ALIGN(size) (((size) + (ALIGNMENT-1)) & ~0x7)
 
+/* 指针占用空间4字节 */
+#define WORD_SIZE 4
 
-#define SIZE_T_SIZE (ALIGN(sizeof(size_t)))
-
-#define DEBUG
+#define DEBUG 1
 
 /* debug functions */
 #ifdef DEBUG
