@@ -27,14 +27,14 @@
 
 #define SIZE_T_SIZE (ALIGN(sizeof(size_t)))
 
-#define WSIZE     4
-#define DSIZE     8
+#define WSIZE 4
+#define DSIZE 8
 
 /* 每次扩展堆的块大小（系统调用“费时费力”，一次扩展一大块，然后逐渐利用这一大块） */
 #define INITCHUNKSIZE (1<<6)
-#define CHUNKSIZE (1<<12)
+#define CHUNKSIZE (1<<13)
 
-#define LISTMAX     16
+#define LISTMAX 16
 
 #define MAX(x, y) ((x) > (y) ? (x) : (y))
 #define MIN(x, y) ((x) < (y) ? (x) : (y))
