@@ -177,14 +177,21 @@ void *mm_malloc(size_t size)
 /*
  * mm_free
  */
-void mm_free(void *ptr)
+void mm_free(void *bp)
 {
+    size_t size = BLOCK_SIZE(bp);
+
+    SET(HEAD(bp), PACK(size, 0));  // MARK: may be faster
+    SET(HEAD(bp), PACK(size, 0));
+
+    insert_node(bp, size);  // MARK: may be faster
+    coalesce(bp);  // 尝试前后合并
 }
 
 /*
  * mm_realloc
  */
-void *mm_realloc(void *ptr, size_t size)
+void *mm_realloc(void *bp, size_t size)
 {
     void *oldptr = ptr;
     void *newptr;
