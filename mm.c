@@ -41,11 +41,21 @@ team_t team = {
 
 #define SIZE_T_SIZE (ALIGN(sizeof(size_t)))
 
+#define DEBUG
+
+/* debug functions */
+#ifdef DEBUG
+#define DBG_PRINTF(...) fprintf(stderr, __VA_ARGS__)
+#else
+#define DBG_PRINTF(...)
+#endif
+
 /*
  * mm_init - initialize the malloc package.
  */
 int mm_init(void)
 {
+
     return 0;
 }
 
