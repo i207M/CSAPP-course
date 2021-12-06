@@ -5,6 +5,7 @@
 .vscode/
 traces/
 test.cpp
+mdriver
 
 # Prerequisites
 *.d

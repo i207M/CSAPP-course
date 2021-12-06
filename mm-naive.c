@@ -1,7 +1,10 @@
 /*
- * mm.c - The full-mark malloc package.
+ * mm-naive.c - The fastest, least memory-efficient malloc package.
  *
- * In this approach,
+ * In this naive approach, a block is allocated by simply incrementing
+ * the brk pointer.  A block is pure payload. There are no headers or
+ * footers.  Blocks are never coalesced or reused. Realloc is
+ * implemented directly using mm_malloc and mm_free.
  *
  * NOTE TO STUDENTS: Replace this header comment with your own header
  * comment that gives a high level description of your solution.
@@ -21,11 +24,11 @@
  ********************************************************/
 team_t team = {
     /* Team name */
-    "Yao",
+    "ateam",
     /* First member's full name */
-    "姚嘉宸",
+    "Harry Bovik",
     /* First member's email address */
-    "2020012700",
+    "bovik@cs.cmu.edu",
     /* Second member's full name (leave blank if none) */
     "",
     /* Second member's email address (leave blank if none) */
@@ -50,7 +53,8 @@ int mm_init(void)
 }
 
 /*
- * mm_malloc
+ * mm_malloc - Allocate a block by incrementing the brk pointer.
+ *     Always allocate a block whose size is a multiple of the alignment.
  */
 void *mm_malloc(size_t size)
 {
@@ -65,14 +69,14 @@ void *mm_malloc(size_t size)
 }
 
 /*
- * mm_free
+ * mm_free - Freeing a block does nothing.
  */
 void mm_free(void *ptr)
 {
 }
 
 /*
- * mm_realloc
+ * mm_realloc - Implemented simply in terms of mm_malloc and mm_free
  */
 void *mm_realloc(void *ptr, size_t size)
 {
@@ -88,7 +92,7 @@ void *mm_realloc(void *ptr, size_t size)
     if (size < copySize) {
         copySize = size;
     }
-    memcpy(newptr, oldptr, copySize);  // NOTE: memcpy or memmove ?
+    memcpy(newptr, oldptr, copySize);
     mm_free(oldptr);
     return newptr;
 }
