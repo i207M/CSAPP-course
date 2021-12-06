@@ -84,7 +84,7 @@ team_t team = {
 /* 指向物理内存上的前一块的指针 */
 #define PRE_BP(bp) ((char *)(bp) - GETSIZE((char *)(bp) - 2 * WSIZE))
 /* 指向物理内存上的后一块的指针 */
-#define NXT_BP(bp) ((char *)(bp) + GETSIZE(HEAD(bp)))
+#define NXT_BP(bp) ((char *)(bp) + BLOCK_SIZE(bp))
 
 /* 指向逻辑链表上的前一块的指针 */
 #define L_PRE_PTR(bp) ((char *)(bp))
@@ -118,12 +118,13 @@ int mm_init(void)
         segregated_free_lists[i] = NULL;
     }
 
-    void *heap = mem_sbrk(1 * WSIZE);
+    void *heap = mem_sbrk(2 * WSIZE);
     if(heap == -1) {
         return -1;
     }
 
     SET(heap, PACK(0, ALLOCATED));  // 设置堆的首位，防止向前溢出
+    SET(heap + 1 * WSIZE, 0);  // 将堆的最后元素置零
 
     if(request_new_node(INITCHUNKSIZE) == NULL) {
         return -1;
@@ -142,7 +143,7 @@ void *mm_malloc(size_t size)
     }
 
     if(size <= 4 * WSIZE) {
-        size = 4 * WSIZE;  // 分配的最小内存的未分配块的头尾长度和
+        size = 4 * WSIZE;  // 分配的最小内存是未分配块的头尾长度
     } else {
         size = ALIGN(size + 2 * WSIZE);
     }
@@ -181,11 +182,11 @@ void mm_free(void *bp)
 {
     size_t size = BLOCK_SIZE(bp);
 
-    SET(HEAD(bp), PACK(size, 0));  // MARK: may be faster
+    SET(HEAD(bp), PACK(size, 0));  // MARK: optimize
     SET(HEAD(bp), PACK(size, 0));
 
-    insert_node(bp, size);  // MARK: may be faster
-    coalesce(bp);  // 尝试前后合并
+    bp = coalesce(bp); // 尝试前后合并
+    insert_node(bp, size);
 }
 
 /*
@@ -193,33 +194,56 @@ void mm_free(void *bp)
  */
 void *mm_realloc(void *bp, size_t size)
 {
-    void *oldptr = ptr;
-    void *newptr;
-    size_t copySize;
+    // if(size == 0) {
+    //     mm_free(bp);  // NOTE
+    //     return NULL;
+    // }
 
-    newptr = mm_malloc(size);
-    if (newptr == NULL) {
+    // if(size <= 4 * WSIZE) {
+    //     size = 4 * WSIZE;  // 分配的最小内存是未分配块的头尾长度
+    // } else {
+    //     size = ALIGN(size + 2 * WSIZE);
+    // }
+
+    // void *new_bp = bp;
+    // int remainder = BLOCK_SIZE(bp) - size;
+
+    // if (remainder >= 0) {
+    //     return bp;
+    // }
+
+    // return new_bp;
+
+    void *new_bp = mm_malloc(size);
+    if (new_bp == NULL) {
         return NULL;
     }
-    copySize = *(size_t *)((char *)oldptr - SIZE_T_SIZE);
+
+    size_t copySize = BLOCK_SIZE(bp) - WSIZE;
     if (size < copySize) {
         copySize = size;
     }
-    memcpy(newptr, oldptr, copySize);  // NOTE: memcpy or memmove ?
-    mm_free(oldptr);
-    return newptr;
+    memmove(new_bp, bp, copySize);
+    mm_free(bp);
+
+    return new_bp;
 }
 
+static void *request_new_node(size_t size)
+{
+    size = ALIGN(size);
+    void *bp = mem_sbrk(size);
+    if(bp == -1) {
+        return NULL;
+    }
 
+    SET(HEAD(bp), PACK(size, 0));
+    SET(FOOT(bp), PACK(size, 0));
 
+    SET(HEAD(NXT_BP(bp)), PACK(0, ALLOCATED));  // 设置后一块的头部，防止向后溢出
 
+    bp = coalesce(bp);
+    insert_node(bp, size);
 
-
-
-
-
-
-
-
-
-
+    return bp;
+}
