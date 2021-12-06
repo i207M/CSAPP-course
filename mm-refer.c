@@ -34,7 +34,7 @@ team_t team = {
     /* Second member's email address (leave blank if none) */
     ""
 };
-#define DEBUG 1
+// #define DEBUG 1
 /* If you want debugging output, use the following macro.  When you hand
  * in, remove the #define DEBUG line. */
 #ifdef DEBUG
@@ -349,7 +349,7 @@ void *mm_realloc(void *ptr, size_t size)
         if(isnextFree == 1) { /*next block is free*/
             realloc_place(bp, asize);
         } else if(isnextFree == 0 && bp != ptr) { /*previous block is free, move the point to new address,and move the payload*/
-            memcpy(bp, ptr, size);
+            memmove(bp, ptr, size);
             realloc_place(bp, asize);
         } else {
             /*realloc_coalesce is fail*/
