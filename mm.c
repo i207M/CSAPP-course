@@ -238,7 +238,6 @@ void *mm_realloc(void *bp, size_t size)
 
 static void *new_node(size_t size)
 {
-    DE_PRINTF("request new node size=%u", size);
     size = ALIGN(size);
     void *bp = mem_sbrk(size);
     if(bp == (void *) -1) {
