@@ -219,39 +219,56 @@ void mm_free(void *bp)
  */
 void *mm_realloc(void *bp, size_t size)
 {
-    // if(size == 0) {
-    //     mm_free(bp);  // NOTE
-    //     return NULL;
-    // }
-
-    // if(size <= 4 * WSIZE) {
-    //     size = 4 * WSIZE;  // 分配的最小内存是未分配块的头尾长度
-    // } else {
-    //     size = ALIGN(size + 2 * WSIZE);
-    // }
-
-    // void *new_bp = bp;
-    // int remainder = BLOCK_SIZE(bp) - size;
-
-    // if (remainder >= 0) {
-    //     return bp;
-    // }
-
-    // return new_bp;
-
-    void *new_bp = mm_malloc(size);
-    if (new_bp == NULL) {
+    if(size == 0) {
+        mm_free(bp);  // NOTE
         return NULL;
     }
 
-    size_t copySize = BLOCK_SIZE(bp) - WSIZE;
-    if (size < copySize) {
-        copySize = size;
-    }
-    memmove(new_bp, bp, copySize);
-    mm_free(bp);
+    size = MMAX(2 * WSIZE, size);
+    size = ALIGN(size + 2 * WSIZE);
 
-    return new_bp;
+    int remainder = BLOCK_SIZE(bp) - size;
+    if (remainder >= 0) {
+        return bp;
+    } else if (!BLOCK_ALLOC(NXT_BP(bp)) || BLOCK_SIZE(NXT_BP(bp)) == 0) {
+        remainder = BLOCK_SIZE(bp) + BLOCK_SIZE(NXT_BP(bp)) - size;
+        if(remainder < 0) {
+            if (new_node(MMAX(-remainder, CHUNKSIZE)) == NULL) {
+                return NULL;
+            }
+            remainder += MMAX(-remainder, CHUNKSIZE);
+        }
+
+        delete_node(NXT_BP(bp));
+        SET(HEAD(bp), PACK(size + remainder, ALLOCATED));
+        SET(FOOT(bp), PACK(size + remainder, ALLOCATED));
+
+        return bp;
+    } else {
+        void *new_bp = mm_malloc(size);
+
+        size_t copy_size = BLOCK_SIZE(bp) - WSIZE;
+        copy_size = MMIN(size, copy_size);
+        memcpy(new_bp, bp, copy_size);
+
+        mm_free(bp);
+        return new_bp;
+    }
+    /* ********** naive realloc ********** */
+
+    // void *new_bp = mm_malloc(size);
+    // if (new_bp == NULL) {
+    //     return NULL;
+    // }
+
+    // size_t copySize = BLOCK_SIZE(bp) - WSIZE;
+    // if (size < copySize) {
+    //     copySize = size;
+    // }
+    // memmove(new_bp, bp, copySize);
+    // mm_free(bp);
+
+    // return new_bp;
 }
 
 static void *new_node(size_t size)
