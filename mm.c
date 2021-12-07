@@ -32,7 +32,7 @@ team_t team = {
     ""
 };
 
-#define DEBUG 1
+#define DEBUG
 
 /* ********** 调试函数 ********** */
 
@@ -41,6 +41,7 @@ team_t team = {
 #define DE_UINT(x) DE_PRINTF("#%d DBG: %u", __LINE__, x)
 #define ECHO() fprintf(stderr, "Echo from line %d\n", __LINE__)
 #else
+#define NDEBUG
 #define DE_PRINTF(...)
 #define ECHO()
 #endif
@@ -253,6 +254,7 @@ void *mm_realloc(void *bp, size_t size)
 
 static void *new_node(size_t size)
 {
+    DE_PRINTF("request new node size=%u", size);
     size = ALIGN(size);
     void *bp = mem_sbrk(size);
     if(bp == (void *) -1) {
@@ -267,14 +269,17 @@ static void *new_node(size_t size)
     // DE_PRINTF("new node: head=%u, foot=%u", HEAD(bp), FOOT(bp));
 
     bp = coalesce(bp);
-    insert_node(bp, size);
+    insert_node(bp, BLOCK_SIZE(bp));
 
+    DE_PRINTF("new node: %u, size=%u", HEAP_SHIFT(bp), size);
+    assert(BLOCK_SIZE(bp) == size);
     return bp;
 }
 
 static void *allocate_on_free_node(void *bp, size_t size)
 {
     DE_PRINTF("place %u on %u", size, HEAP_SHIFT(bp));
+    assert(BLOCK_SIZE(bp) == size);
     size_t total_size = BLOCK_SIZE(bp);
     size_t remainder = total_size - size;
 
@@ -315,6 +320,7 @@ static void *allocate_on_free_node(void *bp, size_t size)
  */
 static void *coalesce(void *bp)
 {
+    DE_PRINTF("coalescing");
     size_t size = BLOCK_SIZE(bp);
 
     if (GET_ALLOC(PRE_BP_FOOT(bp))) {  // 前一块已分配，注意这里不能使用 BLOCK_ALLOC
@@ -346,7 +352,9 @@ static void *coalesce(void *bp)
             SET(FOOT(bp), PACK(size, 0));
         }
     }
-    // DE_PRINTF("coalesce: head=%u, foot=%u", HEAD(bp), FOOT(bp));
+    DE_PRINTF("coalesced: size=%u, head=%u, foot=%u",
+              size, HEAP_SHIFT(HEAD(bp)), HEAP_SHIFT(FOOT(bp)));
+    assert(BLOCK_SIZE(bp) == size);
     return bp;
 }
 
@@ -354,7 +362,9 @@ static void insert_node(void *bp, size_t size)
 {
     int list_i = ROUND2(size);
     list_i = MMIN(LIST_SIZE - 1, list_i);
+    // DE_PRINTF("before insert: block_size=%u, size=%u", BLOCK_SIZE(bp), size);
     DE_PRINTF("insert: %u, size=%u, list_i=%d", HEAP_SHIFT(bp), size, list_i);
+    assert(BLOCK_SIZE(bp) == size);
 
     void *pre = NULL;
     void *nxt = segregated_free_lists[list_i];
@@ -388,8 +398,8 @@ static void delete_node(void *bp)
 
     void *pre = L_PRE(bp);
     void *nxt = L_NXT(bp);
-    DE_PRINTF("delete: %u, p=%u, n=%u, list_i=%d",
-              HEAP_SHIFT(bp), HEAP_SHIFT(pre), HEAP_SHIFT(nxt), list_i);
+    DE_PRINTF("delete: %u, p=%u, n=%u, size=%u, list_i=%d",
+              HEAP_SHIFT(bp), HEAP_SHIFT(pre), HEAP_SHIFT(nxt), BLOCK_SIZE(bp), list_i);
 
     if (pre != NULL) {
         if (nxt != NULL) {
