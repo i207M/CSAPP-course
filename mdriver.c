@@ -21,6 +21,19 @@
 #include "fsecs.h"
 #include "config.h"
 
+#define DEBUG 1
+
+/* ********** 调试函数 ********** */
+
+#ifdef DEBUG
+#define DBG_PRINTF(...) fprintf(stderr, "MD: "), fprintf(stderr, __VA_ARGS__), fprintf(stderr, "\n")
+#define DBG_UINT(x) DBG_PRINTF("#%d DBG: %u", __LINE__, x)
+#define ECHO() fprintf(stderr, "Echo from line %d\n", __LINE__)
+#else
+#define DBG_PRINTF(...)
+#define ECHO()
+#endif
+
 /**********************
  * Constants and macros
  **********************/
@@ -412,6 +425,10 @@ static int add_range(range_t **ranges, char *lo, int size,
             (hi < (char *)mem_heap_lo()) || (hi > (char *)mem_heap_hi())) {
         sprintf(msg, "Payload (%p:%p) lies outside heap (%p:%p)",
                 lo, hi, mem_heap_lo(), mem_heap_hi());
+
+        DBG_PRINTF("lo=%u, hi=%u, heap_lo=%u, heap_hi=%u",
+                   lo, hi, mem_heap_lo(), mem_heap_hi());
+
         malloc_error(tracenum, opnum, msg);
         return 0;
     }
@@ -616,6 +633,10 @@ static int eval_mm_valid(trace_t *trace, int tracenum, range_t **ranges)
     for (i = 0;  i < trace->num_ops;  i++) {
         index = trace->ops[i].index;
         size = trace->ops[i].size;
+
+        /* ********** EDITED ********** */
+        DBG_PRINTF("Op: type=%d, index=%d, size=%d",
+                   trace->ops[i].type, trace->ops[i].index, trace->ops[i].size);
 
         switch (trace->ops[i].type) {
 
