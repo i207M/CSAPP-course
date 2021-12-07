@@ -265,7 +265,7 @@ void *mm_realloc(void *bp, size_t size)
     // if (size < copySize) {
     //     copySize = size;
     // }
-    // memmove(new_bp, bp, copySize);
+    // memcpy(new_bp, bp, copySize);
     // mm_free(bp);
 
     // return new_bp;
