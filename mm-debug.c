@@ -120,6 +120,15 @@ static void *coalesce(void *ptr);
 static void *segregated_free_lists[LIST_SIZE];
 static void *heap_base = NULL;
 
+static inline unsigned int HEAP_SHIFT(const void *x)
+{
+    if(x == NULL) {
+        return 0;
+    } else {
+        return x - heap_base + 1000000;
+    }
+}
+
 /*
  * mm_init - initialize the malloc package.
  */
@@ -133,6 +142,7 @@ int mm_init(void)
     if(heap_base == (void *) -1) {
         return -1;
     }
+    // DE_PRINTF("heap_base=%u", heap_base);
 
     SET(heap_base, PACK(0, ALLOCATED));  // 设置堆的首位，防止向前溢出
     SET((char *)heap_base + 1 * WSIZE, 0);  // 将堆的最后元素置零
@@ -148,11 +158,17 @@ int mm_init(void)
  */
 void *mm_malloc(size_t size)
 {
+    DE_PRINTF("malloc %u", size);
     if(size == 0) {
         return NULL;
     }
 
-    size = MMAX(2 * WSIZE, size);  // 分配的最小内存是未分配块的头尾长度
+    // if(size <= 4 * WSIZE) {
+    //     size = 4 * WSIZE;  // 分配的最小内存是未分配块的头尾长度
+    // } else {
+    //     size = ALIGN(size + 2 * WSIZE);
+    // }
+    size = MMAX(2 * WSIZE, size);
     size = ALIGN(size + 2 * WSIZE);
 
     void *bp = NULL;
@@ -160,10 +176,12 @@ void *mm_malloc(size_t size)
             list_i < LIST_SIZE; ++list_i) {
         if(segregated_free_lists[list_i] != NULL) {
             bp = segregated_free_lists[list_i];
+            DE_PRINTF("search: start=%u, list_i=%d", HEAP_SHIFT(bp), list_i);
 
             while((bp != NULL) && size > BLOCK_SIZE(bp)) {
                 bp = L_NXT(bp);
             }
+
             if(bp != NULL) {
                 break;
             }
@@ -178,6 +196,7 @@ void *mm_malloc(size_t size)
     }
 
     bp = allocate_on_free_node(bp, size);
+    DE_PRINTF("malloced %u on %u", size, HEAP_SHIFT(bp));
     return bp;
 }
 
@@ -234,6 +253,21 @@ void *mm_realloc(void *bp, size_t size)
         mm_free(bp);
         return new_bp;
     }
+    /* ********** naive realloc ********** */
+
+    // void *new_bp = mm_malloc(size);
+    // if (new_bp == NULL) {
+    //     return NULL;
+    // }
+
+    // size_t copySize = BLOCK_SIZE(bp) - WSIZE;
+    // if (size < copySize) {
+    //     copySize = size;
+    // }
+    // memcpy(new_bp, bp, copySize);
+    // mm_free(bp);
+
+    // return new_bp;
 }
 
 static void *new_node(size_t size)
@@ -244,19 +278,24 @@ static void *new_node(size_t size)
     if(bp == (void *) -1) {
         return NULL;
     }
+    // DE_PRINTF("sbrk %u %u, top=%u", size, bp, mem_heap_hi());
 
     SET(HEAD(bp), PACK(size, 0));
     SET(FOOT(bp), PACK(size, 0));
 
     SET(HEAD(NXT_BP(bp)), PACK(0, ALLOCATED));  // 设置后一块的头部，防止向后溢出
+    // DE_PRINTF("new node: head=%u, foot=%u", HEAD(bp), FOOT(bp));
 
     bp = coalesce(bp);
     insert_node(bp, BLOCK_SIZE(bp));
+
+    DE_PRINTF("new node: %u, size=%u", HEAP_SHIFT(bp), BLOCK_SIZE(bp));
     return bp;
 }
 
 static void *allocate_on_free_node(void *bp, size_t size)
 {
+    DE_PRINTF("place %u on %u", size, HEAP_SHIFT(bp));
     size_t total_size = BLOCK_SIZE(bp);
     size_t remainder = total_size - size;
 
@@ -267,13 +306,19 @@ static void *allocate_on_free_node(void *bp, size_t size)
         SET(FOOT(bp), PACK(total_size, 1));
     } else if (size >= LARGE_BLOCK_THR) {
         /* 对于大块，从后往前分配 */
+        DE_PRINTF("insert large block !");
         SET(HEAD(bp), PACK(remainder, 0));
         SET(FOOT(bp), PACK(remainder, 0));
-        insert_node(bp, remainder);
 
+        insert_node(bp, remainder);
         bp = NXT_BP(bp);
         SET(HEAD(bp), PACK(size, 1));
         SET(FOOT(bp), PACK(size, 1));
+
+        // SET(HEAD(NXT_BP(bp)), PACK(size, 1));  // 为何行为不同？
+        // SET(FOOT(NXT_BP(bp)), PACK(size, 1));
+        // insert_node(bp, remainder);
+        // return NXT_BP(bp);
     } else {
         SET(HEAD(bp), PACK(size, 1));
         SET(FOOT(bp), PACK(size, 1));
@@ -291,11 +336,12 @@ static void *allocate_on_free_node(void *bp, size_t size)
  */
 static void *coalesce(void *bp)
 {
+    DE_PRINTF("coalescing: %d %d", GET_ALLOC(PRE_BP_FOOT(bp)), BLOCK_ALLOC(NXT_BP(bp)));
     size_t size = BLOCK_SIZE(bp);
 
     if (GET_ALLOC(PRE_BP_FOOT(bp))) {  // 前一块已分配，注意这里不能使用 BLOCK_ALLOC
         if (BLOCK_ALLOC(NXT_BP(bp))) {
-            ;  // do nothing
+            ;
         } else {
             size += BLOCK_SIZE(NXT_BP(bp));
             delete_node(NXT_BP(bp));
@@ -305,6 +351,7 @@ static void *coalesce(void *bp)
         }
     } else {  // 前一块未分配
         if (BLOCK_ALLOC(NXT_BP(bp))) {
+            // DE_PRINTF("merging: %u %u", bp, PRE_BP(bp));
             bp = PRE_BP(bp);
             size += BLOCK_SIZE(bp);
             delete_node(bp);
@@ -321,6 +368,9 @@ static void *coalesce(void *bp)
             SET(FOOT(bp), PACK(size, 0));
         }
     }
+    DE_PRINTF("coalesced: size=%u, head=%u, foot=%u",
+              size, HEAP_SHIFT(HEAD(bp)), HEAP_SHIFT(FOOT(bp)));
+    assert(BLOCK_SIZE(bp) == size);
     return bp;
 }
 
@@ -328,12 +378,17 @@ static void insert_node(void *bp, size_t size)
 {
     int list_i = ROUND2(size);
     list_i = MMIN(LIST_SIZE - 1, list_i);
+    // DE_PRINTF("before insert: block_size=%u, size=%u", BLOCK_SIZE(bp), size);
+    DE_PRINTF("insert: %u, size=%u, list_i=%d", HEAP_SHIFT(bp), size, list_i);
+    assert(BLOCK_SIZE(bp) == size);
 
     void *pre = NULL;
     void *nxt = segregated_free_lists[list_i];
+    // DE_PRINTF("p=%u, n=%u", HEAP_SHIFT(pre), HEAP_SHIFT(nxt));
     while(nxt != NULL && size > BLOCK_SIZE(nxt)) {
         pre = nxt;
         nxt = L_NXT(nxt);
+        // DE_PRINTF("p=%u, n=%u", HEAP_SHIFT(pre), HEAP_SHIFT(nxt));
     }
 
     if (pre != NULL) {
@@ -342,6 +397,7 @@ static void insert_node(void *bp, size_t size)
     } else {
         SET(L_PRE_PTR(bp), NULL);
         segregated_free_lists[list_i] = bp;
+        DE_PRINTF("set list[%d]=%u", list_i, HEAP_SHIFT(bp));
     }
     if (nxt != NULL) {
         SET(L_NXT_PTR(bp), nxt);
@@ -349,6 +405,9 @@ static void insert_node(void *bp, size_t size)
     } else {
         SET(L_NXT_PTR(bp), NULL);
     }
+    DE_PRINTF("after insert: %u, p=%u, n=%u, size=%u",
+              HEAP_SHIFT(bp), HEAP_SHIFT(L_PRE(bp)), HEAP_SHIFT(L_NXT(bp)), size);
+    assert(size == BLOCK_SIZE(bp));
 }
 
 static void delete_node(void *bp)
@@ -358,6 +417,8 @@ static void delete_node(void *bp)
 
     void *pre = L_PRE(bp);
     void *nxt = L_NXT(bp);
+    DE_PRINTF("delete: %u, p=%u, n=%u, size=%u, list_i=%d",
+              HEAP_SHIFT(bp), HEAP_SHIFT(pre), HEAP_SHIFT(nxt), BLOCK_SIZE(bp), list_i);
 
     if (pre != NULL) {
         if (nxt != NULL) {
@@ -370,8 +431,10 @@ static void delete_node(void *bp)
         if (nxt != NULL) {
             SET(L_PRE_PTR(nxt), NULL);
             segregated_free_lists[list_i] = nxt;
+            DE_PRINTF("set list[%d]=%u", list_i, HEAP_SHIFT(nxt));
         } else {
             segregated_free_lists[list_i] = NULL;
+            DE_PRINTF("set list[%d]=%u", list_i, NULL);
         }
     }
 }
