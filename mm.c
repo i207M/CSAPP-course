@@ -37,9 +37,11 @@ team_t team = {
 /* ********** 调试函数 ********** */
 
 #ifdef DEBUG
-#define DBG_PRINTF(...) fprintf(stderr, __VA_ARGS__)
+#define DBG_PRINTF(...) fprintf(stderr, __VA_ARGS__), putchar('\n')
+#define ECHO() fprintf(stderr, "Echo from line %d\n", __LINE__)
 #else
 #define DBG_PRINTF(...)
+#define ECHO()
 #endif
 
 /* ********** 常量设定 ********** */
@@ -87,7 +89,7 @@ team_t team = {
 #define BLOCK_ALLOC(bp) GET_ALLOC(HEAD(bp))
 
 /* 指向物理内存上的前一块的指针 */
-#define PRE_BP(bp) ((char *)(bp) - GETSIZE((char *)(bp) - 2 * WSIZE))
+#define PRE_BP(bp) ((char *)(bp) - GET_SIZE((char *)(bp) - 2 * WSIZE))
 /* 指向物理内存上的后一块的指针 */
 #define NXT_BP(bp) ((char *)(bp) + BLOCK_SIZE(bp))
 
@@ -124,7 +126,7 @@ int mm_init(void)
     }
 
     char *heap = mem_sbrk(2 * WSIZE);
-    if(heap == -1) {
+    if(heap == (void *) -1) {
         return -1;
     }
 
@@ -134,7 +136,6 @@ int mm_init(void)
     if(new_node(INITCHUNKSIZE) == NULL) {
         return -1;
     }
-
     return 0;
 }
 
@@ -238,7 +239,7 @@ static void *new_node(size_t size)
 {
     size = ALIGN(size);
     void *bp = mem_sbrk(size);
-    if(bp == -1) {
+    if(bp == (void *) -1) {
         return NULL;
     }
 

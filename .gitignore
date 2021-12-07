@@ -2,9 +2,11 @@
 *.out
 *.ans
 *.zip
-.vscode/
+*.rep
 traces/
+.vscode/
 test.cpp
+test
 mdriver
 
 # Prerequisites
