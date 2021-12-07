@@ -37,11 +37,11 @@ team_t team = {
 /* ********** 调试函数 ********** */
 
 #ifdef DEBUG
-#define DBG_PRINTF(...) fprintf(stderr, __VA_ARGS__), fprintf(stderr, "\n")
-#define DBG_UINT(x) DBG_PRINTF("#%d DBG: %u", __LINE__, x)
+#define DE_PRINTF(...) fprintf(stderr, __VA_ARGS__), fprintf(stderr, "\n")
+#define DE_UINT(x) DE_PRINTF("#%d DBG: %u", __LINE__, x)
 #define ECHO() fprintf(stderr, "Echo from line %d\n", __LINE__)
 #else
-#define DBG_PRINTF(...)
+#define DE_PRINTF(...)
 #define ECHO()
 #endif
 
@@ -117,6 +117,7 @@ static void delete_node(void *ptr);
 static void *coalesce(void *ptr);
 
 static void *segregated_free_lists[LIST_SIZE];
+static void *heap_base = NULL;
 
 /*
  * mm_init - initialize the malloc package.
@@ -127,14 +128,14 @@ int mm_init(void)
         segregated_free_lists[i] = NULL;
     }
 
-    char *heap = mem_sbrk(2 * WSIZE);
-    if(heap == (void *) -1) {
+    heap_base = mem_sbrk(2 * WSIZE);
+    if(heap_base == (void *) -1) {
         return -1;
     }
-    DBG_PRINTF("Heap base: %u", heap);
+    DE_PRINTF("Heap base: %u", heap_base);
 
-    SET(heap, PACK(0, ALLOCATED));  // 设置堆的首位，防止向前溢出
-    SET(heap + 1 * WSIZE, 0);  // 将堆的最后元素置零
+    SET(heap_base, PACK(0, ALLOCATED));  // 设置堆的首位，防止向前溢出
+    SET(heap_base + 1 * WSIZE, 0);  // 将堆的最后元素置零
 
     if(new_node(INITCHUNKSIZE) == NULL) {
         return -1;
@@ -147,7 +148,7 @@ int mm_init(void)
  */
 void *mm_malloc(size_t size)
 {
-    DBG_PRINTF("malloc %u", size);
+    DE_PRINTF("malloc %u", size);
     if(size == 0) {
         return NULL;
     }
@@ -163,6 +164,7 @@ void *mm_malloc(size_t size)
             list_i < LIST_SIZE; ++list_i) {
         if(segregated_free_lists[list_i] != NULL) {
             bp = segregated_free_lists[list_i];
+            DE_PRINTF("search: start=%u, list_i=%d", bp, list_i);
 
             while((bp != NULL) && size > BLOCK_SIZE(bp)) {
                 bp = L_NXT(bp);
@@ -182,7 +184,7 @@ void *mm_malloc(size_t size)
     }
 
     bp = allocate_on_free_node(bp, size);
-    DBG_PRINTF("malloced %u %u", size, bp);
+    DE_PRINTF("malloced %u %u", size, bp);
     return bp;
 }
 
@@ -247,13 +249,13 @@ static void *new_node(size_t size)
     if(bp == (void *) -1) {
         return NULL;
     }
-    // DBG_PRINTF("sbrk %u %u, top=%u", size, bp, mem_heap_hi());
+    // DE_PRINTF("sbrk %u %u, top=%u", size, bp, mem_heap_hi());
 
     SET(HEAD(bp), PACK(size, 0));
     SET(FOOT(bp), PACK(size, 0));
 
     SET(HEAD(NXT_BP(bp)), PACK(0, ALLOCATED));  // 设置后一块的头部，防止向后溢出
-    // DBG_PRINTF("new node: head=%u, foot=%u", HEAD(bp), FOOT(bp));
+    // DE_PRINTF("new node: head=%u, foot=%u", HEAD(bp), FOOT(bp));
 
     bp = coalesce(bp);
     insert_node(bp, size);
@@ -263,6 +265,7 @@ static void *new_node(size_t size)
 
 static void *allocate_on_free_node(void *bp, size_t size)
 {
+    DE_PRINTF("place: %u %u", bp, size);
     size_t total_size = BLOCK_SIZE(bp);
     size_t remainder = total_size - size;
 
@@ -311,8 +314,7 @@ static void *coalesce(void *bp)
         }
     } else {  // 前一块未分配
         if (BLOCK_ALLOC(NXT_BP(bp))) {
-            DBG_UINT(GET_SIZE(PRE_BP_FOOT(bp)));
-            // DBG_PRINTF("merging: %u %u", bp, PRE_BP(bp));
+            // DE_PRINTF("merging: %u %u", bp, PRE_BP(bp));
             bp = PRE_BP(bp);
             size += BLOCK_SIZE(bp);
             delete_node(bp);
@@ -329,8 +331,7 @@ static void *coalesce(void *bp)
             SET(FOOT(bp), PACK(size, 0));
         }
     }
-    DBG_PRINTF("coalesce: head=%u, foot=%u", HEAD(bp), FOOT(bp));
-
+    // DE_PRINTF("coalesce: head=%u, foot=%u", HEAD(bp), FOOT(bp));
     return bp;
 }
 
@@ -352,6 +353,7 @@ static void insert_node(void *bp, size_t size)
     } else {
         SET(L_PRE_PTR(bp), NULL);
         segregated_free_lists[list_i] = bp;
+        DE_PRINTF("set list[%d]=%u", list_i, bp);
     }
     if (nxt != NULL) {
         SET(L_NXT_PTR(bp), nxt);
@@ -359,6 +361,7 @@ static void insert_node(void *bp, size_t size)
     } else {
         SET(L_NXT_PTR(bp), NULL);
     }
+    DE_PRINTF("insert: %u %u %u, size=%u", bp, L_PRE(bp), L_NXT(bp), size);
 }
 
 static void delete_node(void *bp)
@@ -368,6 +371,7 @@ static void delete_node(void *bp)
 
     void *pre = L_PRE(bp);
     void *nxt = L_NXT(bp);
+    DE_PRINTF("delete: %u, list_i=%d, pre=%u, nxt=%u", bp, list_i, pre, nxt);
 
     if (pre != NULL) {
         if (nxt != NULL) {
@@ -380,8 +384,11 @@ static void delete_node(void *bp)
         if (nxt != NULL) {
             SET(L_PRE_PTR(nxt), NULL);
             segregated_free_lists[list_i] = nxt;
+            DE_PRINTF("set list[%d]=%u", list_i, nxt);
         } else {
             segregated_free_lists[list_i] = NULL;
+            DE_PRINTF("set list[%d]=%u", list_i, NULL);
         }
     }
+    DE_PRINTF("after delete: list_head=%u", segregated_free_lists[list_i]);
 }
