@@ -68,6 +68,8 @@ team_t team = {
 /* rounds up to the nearest multiple of ALIGNMENT */
 #define ALIGN(size) (((size) + (ALIGNMENT-1)) & ~0x7)
 
+#define ROUND2(size) (31 - __builtin_clz(size))
+
 #define GET(ptr) (*(unsigned int *)(ptr))
 #define SET(ptr, val) (*(unsigned int *)(ptr) = (val))
 
@@ -152,7 +154,7 @@ void *mm_malloc(size_t size)
     }
 
     void *bp = NULL;
-    for(RI list_i = __builtin_ffs(size) - 1;  // 首个大于 size 的桶的下标
+    for(RI list_i = ROUND2(size); // 首个大于 size 的桶的下标
             list_i < LIST_SIZE; ++list_i) {
         if(segregated_free_lists[list_i] != NULL) {
             bp = segregated_free_lists[list_i];
@@ -186,7 +188,7 @@ void mm_free(void *bp)
     size_t size = BLOCK_SIZE(bp);
 
     SET(HEAD(bp), PACK(size, 0));  // MARK: optimize
-    SET(HEAD(bp), PACK(size, 0));
+    SET(FOOT(bp), PACK(size, 0));
 
     bp = coalesce(bp); // 尝试前后合并
     insert_node(bp, size);
@@ -299,7 +301,7 @@ static void *coalesce(void *bp)
             SET(HEAD(bp), PACK(size, 0));
             SET(FOOT(bp), PACK(size, 0));
         }
-    } else {
+    } else {  // 前一块未分配
         if (BLOCK_ALLOC(NXT_BP(bp))) {
             bp = PRE_BP(bp);
             size += BLOCK_SIZE(bp);
@@ -319,4 +321,56 @@ static void *coalesce(void *bp)
     }
 
     return bp;
+}
+
+static void insert_node(void *bp, size_t size)
+{
+    int list_i = ROUND2(size);
+    list_i = MMIN(LIST_SIZE - 1, list_i);
+
+    void *pre = NULL;
+    void *nxt = segregated_free_lists[list_i];
+    while(nxt != NULL && size > BLOCK_SIZE(nxt)) {
+        pre = nxt;
+        nxt = L_NXT(bp);
+    }
+
+    if (pre != NULL) {
+        SET(L_PRE_PTR(bp), pre);
+        SET(L_NXT_PTR(pre), bp);
+    } else {
+        SET(L_PRE_PTR(bp), NULL);
+        segregated_free_lists[list_i] = bp;
+    }
+    if (nxt != NULL) {
+        SET(L_NXT_PTR(bp), nxt);
+        SET(L_PRE_PTR(nxt), bp);
+    } else {
+        SET(L_NXT_PTR(bp), NULL);
+    }
+}
+
+static void delete_node(void *bp)
+{
+    int list_i = ROUND2(BLOCK_SIZE(bp));
+    list_i = MMIN(LIST_SIZE - 1, list_i);
+
+    void *pre = L_PRE(bp);
+    void *nxt = L_NXT(bp);
+
+    if (pre != NULL) {
+        if (nxt != NULL) {
+            SET(L_NXT_PTR(pre), nxt);
+            SET(L_PRE_PTR(nxt), pre);
+        } else {
+            SET(L_NXT_PTR(pre), NULL);
+        }
+    } else {
+        if (nxt != NULL) {
+            SET(L_PRE_PTR(nxt), NULL);
+            segregated_free_lists[list_i] = nxt;
+        } else {
+            segregated_free_lists[list_i] = NULL;
+        }
+    }
 }
