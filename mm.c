@@ -262,6 +262,7 @@ static void *allocate_on_free_node(void *bp, size_t size)
         SET(HEAD(bp), PACK(total_size, 1));
         SET(FOOT(bp), PACK(total_size, 1));
     } else if (size >= LARGE_BLOCK_THR) {
+        /* 对于大块，从后往前分配 */
         SET(HEAD(bp), PACK(remainder, 0));
         SET(FOOT(bp), PACK(remainder, 0));
         insert_node(bp, remainder);
@@ -278,5 +279,44 @@ static void *allocate_on_free_node(void *bp, size_t size)
         SET(FOOT(nxt_bp), PACK(remainder, 0));
         insert_node(nxt_bp, remainder);
     }
+    return bp;
+}
+
+/*
+ * coalesce  尝试与前后块合并，默认 bp 未插入
+ */
+static void *coalesce(void *bp)
+{
+    size_t size = BLOCK_SIZE(bp);
+
+    if (BLOCK_ALLOC(PRE_BP(bp))) {  // 前一块已分配
+        if (BLOCK_ALLOC(NXT_BP(bp))) {
+            ;
+        } else {
+            size += BLOCK_SIZE(NXT_BP(bp));
+            delete_node(NXT_BP(bp));
+
+            SET(HEAD(bp), PACK(size, 0));
+            SET(FOOT(bp), PACK(size, 0));
+        }
+    } else {
+        if (BLOCK_ALLOC(NXT_BP(bp))) {
+            bp = PRE_BP(bp);
+            size += BLOCK_SIZE(bp);
+            delete_node(bp);
+
+            SET(HEAD(bp), PACK(size, 0));
+            SET(FOOT(bp), PACK(size, 0));
+        } else {
+            size += BLOCK_SIZE(PRE_BP(bp)) + BLOCK_SIZE(NXT_BP(bp));
+            delete_node(PRE_BP(bp));
+            delete_node(NXT_BP(bp));
+
+            bp = PRE_BP(bp);
+            SET(HEAD(bp), PACK(size, 0));
+            SET(FOOT(bp), PACK(size, 0));
+        }
+    }
+
     return bp;
 }
