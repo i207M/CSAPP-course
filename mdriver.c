@@ -635,8 +635,8 @@ static int eval_mm_valid(trace_t *trace, int tracenum, range_t **ranges)
         size = trace->ops[i].size;
 
         /* ********** EDITED ********** */
-        DBG_PRINTF("Op: type=%d, index=%d, size=%d",
-                   trace->ops[i].type, trace->ops[i].index, trace->ops[i].size);
+        DBG_PRINTF("Op #%d: type=%d, index=%d, size=%d",
+                   i, trace->ops[i].type, trace->ops[i].index, trace->ops[i].size);
 
         switch (trace->ops[i].type) {
 

@@ -145,7 +145,7 @@ int mm_init(void)
     // DE_PRINTF("heap_base=%u", heap_base);
 
     SET(heap_base, PACK(0, ALLOCATED));  // 设置堆的首位，防止向前溢出
-    SET(heap_base + 1 * WSIZE, 0);  // 将堆的最后元素置零
+    SET((char *)heap_base + 1 * WSIZE, 0);  // 将堆的最后元素置零
 
     if(new_node(INITCHUNKSIZE) == NULL) {
         return -1;
@@ -320,7 +320,7 @@ static void *allocate_on_free_node(void *bp, size_t size)
  */
 static void *coalesce(void *bp)
 {
-    DE_PRINTF("coalescing");
+    DE_PRINTF("coalescing: %d %d", GET_ALLOC(PRE_BP_FOOT(bp)), BLOCK_ALLOC(NXT_BP(bp)));
     size_t size = BLOCK_SIZE(bp);
 
     if (GET_ALLOC(PRE_BP_FOOT(bp))) {  // 前一块已分配，注意这里不能使用 BLOCK_ALLOC
@@ -365,12 +365,18 @@ static void insert_node(void *bp, size_t size)
     // DE_PRINTF("before insert: block_size=%u, size=%u", BLOCK_SIZE(bp), size);
     DE_PRINTF("insert: %u, size=%u, list_i=%d", HEAP_SHIFT(bp), size, list_i);
     assert(BLOCK_SIZE(bp) == size);
+    DE_UINT(L_NXT((char *)heap_base + 6216));
 
     void *pre = NULL;
     void *nxt = segregated_free_lists[list_i];
+    DE_PRINTF("p=%u, n=%u", HEAP_SHIFT(pre), HEAP_SHIFT(nxt));
+    if((char *)heap_base + 6216 == (char *)nxt) {
+        ECHO();
+    }
     while(nxt != NULL && size > BLOCK_SIZE(nxt)) {
         pre = nxt;
-        nxt = L_NXT(bp);
+        nxt = L_NXT(nxt);
+        DE_PRINTF("p=%u, n=%u", HEAP_SHIFT(pre), HEAP_SHIFT(nxt));
     }
 
     if (pre != NULL) {
@@ -407,6 +413,7 @@ static void delete_node(void *bp)
             SET(L_PRE_PTR(nxt), pre);
         } else {
             SET(L_NXT_PTR(pre), NULL);
+            DE_UINT(L_NXT(pre));
         }
     } else {
         if (nxt != NULL) {
