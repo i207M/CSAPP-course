@@ -37,7 +37,8 @@ team_t team = {
 /* ********** 调试函数 ********** */
 
 #ifdef DEBUG
-#define DBG_PRINTF(...) fprintf(stderr, __VA_ARGS__), putchar('\n')
+#define DBG_PRINTF(...) fprintf(stderr, __VA_ARGS__), fprintf(stderr, "\n")
+#define DBG_UINT(x) DBG_PRINTF("#%d DBG: %u", __LINE__, x)
 #define ECHO() fprintf(stderr, "Echo from line %d\n", __LINE__)
 #else
 #define DBG_PRINTF(...)
@@ -80,16 +81,17 @@ team_t team = {
 #define GET_SIZE(ptr) (GET(ptr) & ~0x7)
 #define GET_ALLOC(ptr) (GET(ptr) & ALLOCATED)
 
-/* 内存块的头部地址 */
-#define HEAD(bp) ((char *)(bp) - WSIZE)
-/* 内存块的尾部地址 */
-#define FOOT(bp) ((char *)(bp) + GET_SIZE(HEAD(bp)) - WSIZE)
-
 #define BLOCK_SIZE(bp) GET_SIZE(HEAD(bp))
 #define BLOCK_ALLOC(bp) GET_ALLOC(HEAD(bp))
 
+/* 内存块的头部地址 */
+#define HEAD(bp) ((char *)(bp) - WSIZE)
+/* 内存块的尾部地址 */
+#define FOOT(bp) ((char *)(bp) + BLOCK_SIZE(bp) - 2 * WSIZE)
+
 /* 指向物理内存上的前一块的指针 */
-#define PRE_BP(bp) ((char *)(bp) - GET_SIZE((char *)(bp) - 2 * WSIZE))
+#define PRE_BP_FOOT(bp) ((char *)(bp) - 2 * WSIZE)
+#define PRE_BP(bp) ((char *)(bp) - GET_SIZE(PRE_BP_FOOT(bp)))
 /* 指向物理内存上的后一块的指针 */
 #define NXT_BP(bp) ((char *)(bp) + BLOCK_SIZE(bp))
 
@@ -129,6 +131,7 @@ int mm_init(void)
     if(heap == (void *) -1) {
         return -1;
     }
+    DBG_PRINTF("Heap base: %u", heap);
 
     SET(heap, PACK(0, ALLOCATED));  // 设置堆的首位，防止向前溢出
     SET(heap + 1 * WSIZE, 0);  // 将堆的最后元素置零
@@ -144,6 +147,7 @@ int mm_init(void)
  */
 void *mm_malloc(size_t size)
 {
+    DBG_PRINTF("malloc %u", size);
     if(size == 0) {
         return NULL;
     }
@@ -178,6 +182,7 @@ void *mm_malloc(size_t size)
     }
 
     bp = allocate_on_free_node(bp, size);
+    DBG_PRINTF("malloced %u %u", size, bp);
     return bp;
 }
 
@@ -242,11 +247,13 @@ static void *new_node(size_t size)
     if(bp == (void *) -1) {
         return NULL;
     }
+    // DBG_PRINTF("sbrk %u %u, top=%u", size, bp, mem_heap_hi());
 
     SET(HEAD(bp), PACK(size, 0));
     SET(FOOT(bp), PACK(size, 0));
 
     SET(HEAD(NXT_BP(bp)), PACK(0, ALLOCATED));  // 设置后一块的头部，防止向后溢出
+    // DBG_PRINTF("new node: head=%u, foot=%u", HEAD(bp), FOOT(bp));
 
     bp = coalesce(bp);
     insert_node(bp, size);
@@ -292,7 +299,7 @@ static void *coalesce(void *bp)
 {
     size_t size = BLOCK_SIZE(bp);
 
-    if (BLOCK_ALLOC(PRE_BP(bp))) {  // 前一块已分配
+    if (GET_ALLOC(PRE_BP_FOOT(bp))) {  // 前一块已分配，注意这里不能使用 BLOCK_ALLOC
         if (BLOCK_ALLOC(NXT_BP(bp))) {
             ;
         } else {
@@ -304,6 +311,8 @@ static void *coalesce(void *bp)
         }
     } else {  // 前一块未分配
         if (BLOCK_ALLOC(NXT_BP(bp))) {
+            DBG_UINT(GET_SIZE(PRE_BP_FOOT(bp)));
+            // DBG_PRINTF("merging: %u %u", bp, PRE_BP(bp));
             bp = PRE_BP(bp);
             size += BLOCK_SIZE(bp);
             delete_node(bp);
@@ -320,6 +329,7 @@ static void *coalesce(void *bp)
             SET(FOOT(bp), PACK(size, 0));
         }
     }
+    DBG_PRINTF("coalesce: head=%u, foot=%u", HEAD(bp), FOOT(bp));
 
     return bp;
 }
