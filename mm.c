@@ -1,7 +1,7 @@
 /*
  * mm.c - The full-mark malloc package.
  *
- * In this approach,
+ * In this approach, we apply segregated free lists.
  *
  * NOTE TO STUDENTS: Replace this header comment with your own header
  * comment that gives a high level description of your solution.
@@ -291,14 +291,12 @@ static void *new_node(size_t size)
     insert_node(bp, BLOCK_SIZE(bp));
 
     DE_PRINTF("new node: %u, size=%u", HEAP_SHIFT(bp), BLOCK_SIZE(bp));
-    // assert(BLOCK_SIZE(bp) == size);
     return bp;
 }
 
 static void *allocate_on_free_node(void *bp, size_t size)
 {
     DE_PRINTF("place %u on %u", size, HEAP_SHIFT(bp));
-    // assert(BLOCK_SIZE(bp) == size);
     size_t total_size = BLOCK_SIZE(bp);
     size_t remainder = total_size - size;
 
