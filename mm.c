@@ -120,7 +120,7 @@ static void *coalesce(void *ptr);
 static void *segregated_free_lists[LIST_SIZE];
 static void *heap_base = NULL;
 
-static inline unsigned int HEAP_SHIFT(void *x)
+static inline unsigned int HEAP_SHIFT(const void *x)
 {
     if(x == NULL) {
         return 0;
@@ -209,7 +209,7 @@ void mm_free(void *bp)
     SET(FOOT(bp), PACK(size, 0));
 
     bp = coalesce(bp); // 尝试前后合并
-    insert_node(bp, size);
+    insert_node(bp, BLOCK_SIZE(bp));
 }
 
 /*
@@ -271,15 +271,15 @@ static void *new_node(size_t size)
     bp = coalesce(bp);
     insert_node(bp, BLOCK_SIZE(bp));
 
-    DE_PRINTF("new node: %u, size=%u", HEAP_SHIFT(bp), size);
-    assert(BLOCK_SIZE(bp) == size);
+    DE_PRINTF("new node: %u, size=%u", HEAP_SHIFT(bp), BLOCK_SIZE(bp));
+    // assert(BLOCK_SIZE(bp) == size);
     return bp;
 }
 
 static void *allocate_on_free_node(void *bp, size_t size)
 {
     DE_PRINTF("place %u on %u", size, HEAP_SHIFT(bp));
-    assert(BLOCK_SIZE(bp) == size);
+    // assert(BLOCK_SIZE(bp) == size);
     size_t total_size = BLOCK_SIZE(bp);
     size_t remainder = total_size - size;
 
