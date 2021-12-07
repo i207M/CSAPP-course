@@ -44,16 +44,19 @@ team_t team = {
 
 /* ********** 常量设定 ********** */
 
+/* size of word (pointer) */
+#define WSIZE 4
+
 /* single word (4) or double word (8) alignment */
 #define ALIGNMENT 8
-
-#define WSIZE 4
 
 /* size of segregated free list */
 #define LIST_SIZE 16
 
 #define INITCHUNKSIZE (1 << 6)
 #define CHUNKSIZE (1 << 13)
+
+#define LARGE_BLOCK_THR 96
 
 #define ALLOCATED 1
 
@@ -101,8 +104,8 @@ team_t team = {
 #define RI register int
 
 
-static void *request_new_node(size_t size);
 static void *allocate_on_free_node(void *ptr, size_t size);
+static void *new_node(size_t size);
 static void insert_node(void *ptr, size_t size);
 static void delete_node(void *ptr);
 static void *coalesce(void *ptr);
@@ -118,7 +121,7 @@ int mm_init(void)
         segregated_free_lists[i] = NULL;
     }
 
-    void *heap = mem_sbrk(2 * WSIZE);
+    char *heap = mem_sbrk(2 * WSIZE);
     if(heap == -1) {
         return -1;
     }
@@ -126,7 +129,7 @@ int mm_init(void)
     SET(heap, PACK(0, ALLOCATED));  // 设置堆的首位，防止向前溢出
     SET(heap + 1 * WSIZE, 0);  // 将堆的最后元素置零
 
-    if(request_new_node(INITCHUNKSIZE) == NULL) {
+    if(new_node(INITCHUNKSIZE) == NULL) {
         return -1;
     }
 
@@ -165,7 +168,7 @@ void *mm_malloc(size_t size)
     }
 
     if (bp == NULL) {
-        bp = request_new_node(MMAX(size, CHUNKSIZE));
+        bp = new_node(MMAX(size, CHUNKSIZE));
         if(bp == NULL) {
             return NULL;
         }
@@ -229,7 +232,7 @@ void *mm_realloc(void *bp, size_t size)
     return new_bp;
 }
 
-static void *request_new_node(size_t size)
+static void *new_node(size_t size)
 {
     size = ALIGN(size);
     void *bp = mem_sbrk(size);
@@ -245,5 +248,35 @@ static void *request_new_node(size_t size)
     bp = coalesce(bp);
     insert_node(bp, size);
 
+    return bp;
+}
+
+static void *allocate_on_free_node(void *bp, size_t size)
+{
+    size_t total_size = BLOCK_SIZE(bp);
+    size_t remainder = total_size - size;
+
+    delete_node(bp);
+
+    if(remainder < 4 * WSIZE) {
+        SET(HEAD(bp), PACK(total_size, 1));
+        SET(FOOT(bp), PACK(total_size, 1));
+    } else if (size >= LARGE_BLOCK_THR) {
+        SET(HEAD(bp), PACK(remainder, 0));
+        SET(FOOT(bp), PACK(remainder, 0));
+        insert_node(bp, remainder);
+
+        bp = NXT_BP(bp);
+        SET(HEAD(bp), PACK(size, 1));
+        SET(FOOT(bp), PACK(size, 1));
+    } else {
+        SET(HEAD(bp), PACK(size, 1));
+        SET(FOOT(bp), PACK(size, 1));
+
+        void *nxt_bp = NXT_BP(bp);
+        SET(HEAD(nxt_bp), PACK(remainder, 0));
+        SET(FOOT(nxt_bp), PACK(remainder, 0));
+        insert_node(nxt_bp, remainder);
+    }
     return bp;
 }
