@@ -21,7 +21,7 @@
 #include "fsecs.h"
 #include "config.h"
 
-#define DEBUG 1
+// #define DEBUG 1
 
 /* ********** 调试函数 ********** */
 

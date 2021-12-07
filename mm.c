@@ -32,7 +32,7 @@ team_t team = {
     ""
 };
 
-#define DEBUG
+// #define DEBUG
 
 /* ********** 调试函数 ********** */
 
@@ -163,11 +163,13 @@ void *mm_malloc(size_t size)
         return NULL;
     }
 
-    if(size <= 4 * WSIZE) {
-        size = 4 * WSIZE;  // 分配的最小内存是未分配块的头尾长度
-    } else {
-        size = ALIGN(size + 2 * WSIZE);
-    }
+    // if(size <= 4 * WSIZE) {
+    //     size = 4 * WSIZE;  // 分配的最小内存是未分配块的头尾长度
+    // } else {
+    //     size = ALIGN(size + 2 * WSIZE);
+    // }
+    size = MMAX(2 * WSIZE, size);
+    size = ALIGN(size + 2 * WSIZE);
 
     void *bp = NULL;
     for(RI list_i = ROUND2(size); // 首个大于 size 的桶的下标
@@ -365,18 +367,14 @@ static void insert_node(void *bp, size_t size)
     // DE_PRINTF("before insert: block_size=%u, size=%u", BLOCK_SIZE(bp), size);
     DE_PRINTF("insert: %u, size=%u, list_i=%d", HEAP_SHIFT(bp), size, list_i);
     assert(BLOCK_SIZE(bp) == size);
-    DE_UINT(L_NXT((char *)heap_base + 6216));
 
     void *pre = NULL;
     void *nxt = segregated_free_lists[list_i];
-    DE_PRINTF("p=%u, n=%u", HEAP_SHIFT(pre), HEAP_SHIFT(nxt));
-    if((char *)heap_base + 6216 == (char *)nxt) {
-        ECHO();
-    }
+    // DE_PRINTF("p=%u, n=%u", HEAP_SHIFT(pre), HEAP_SHIFT(nxt));
     while(nxt != NULL && size > BLOCK_SIZE(nxt)) {
         pre = nxt;
         nxt = L_NXT(nxt);
-        DE_PRINTF("p=%u, n=%u", HEAP_SHIFT(pre), HEAP_SHIFT(nxt));
+        // DE_PRINTF("p=%u, n=%u", HEAP_SHIFT(pre), HEAP_SHIFT(nxt));
     }
 
     if (pre != NULL) {
@@ -395,6 +393,7 @@ static void insert_node(void *bp, size_t size)
     }
     DE_PRINTF("after insert: %u, p=%u, n=%u, size=%u",
               HEAP_SHIFT(bp), HEAP_SHIFT(L_PRE(bp)), HEAP_SHIFT(L_NXT(bp)), size);
+    assert(size == BLOCK_SIZE(bp));
 }
 
 static void delete_node(void *bp)
@@ -413,7 +412,6 @@ static void delete_node(void *bp)
             SET(L_PRE_PTR(nxt), pre);
         } else {
             SET(L_NXT_PTR(pre), NULL);
-            DE_UINT(L_NXT(pre));
         }
     } else {
         if (nxt != NULL) {
