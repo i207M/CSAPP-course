@@ -26,7 +26,7 @@
 /* ********** 调试函数 ********** */
 
 #ifdef DEBUG
-#define DBG_PRINTF(...) fprintf(stderr, "MD: "), fprintf(stderr, __VA_ARGS__), fprintf(stderr, "\n")
+#define DBG_PRINTF(...) fprintf(stderr, "*** MD *** "), fprintf(stderr, __VA_ARGS__), fprintf(stderr, "\n")
 #define DBG_UINT(x) DBG_PRINTF("#%d DBG: %u", __LINE__, x)
 #define ECHO() fprintf(stderr, "Echo from line %d\n", __LINE__)
 #else

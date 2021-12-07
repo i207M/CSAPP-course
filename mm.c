@@ -119,6 +119,15 @@ static void *coalesce(void *ptr);
 static void *segregated_free_lists[LIST_SIZE];
 static void *heap_base = NULL;
 
+static inline unsigned int HEAP_SHIFT(void *x)
+{
+    if(x == NULL) {
+        return 0;
+    } else {
+        return x - heap_base + 1000000;
+    }
+}
+
 /*
  * mm_init - initialize the malloc package.
  */
@@ -132,7 +141,7 @@ int mm_init(void)
     if(heap_base == (void *) -1) {
         return -1;
     }
-    DE_PRINTF("Heap base: %u", heap_base);
+    // DE_PRINTF("heap_base=%u", heap_base);
 
     SET(heap_base, PACK(0, ALLOCATED));  // 设置堆的首位，防止向前溢出
     SET(heap_base + 1 * WSIZE, 0);  // 将堆的最后元素置零
@@ -164,7 +173,7 @@ void *mm_malloc(size_t size)
             list_i < LIST_SIZE; ++list_i) {
         if(segregated_free_lists[list_i] != NULL) {
             bp = segregated_free_lists[list_i];
-            DE_PRINTF("search: start=%u, list_i=%d", bp, list_i);
+            DE_PRINTF("search: start=%u, list_i=%d", HEAP_SHIFT(bp), list_i);
 
             while((bp != NULL) && size > BLOCK_SIZE(bp)) {
                 bp = L_NXT(bp);
@@ -184,7 +193,7 @@ void *mm_malloc(size_t size)
     }
 
     bp = allocate_on_free_node(bp, size);
-    DE_PRINTF("malloced %u %u", size, bp);
+    DE_PRINTF("malloced %u on %u", size, HEAP_SHIFT(bp));
     return bp;
 }
 
@@ -265,7 +274,7 @@ static void *new_node(size_t size)
 
 static void *allocate_on_free_node(void *bp, size_t size)
 {
-    DE_PRINTF("place: %u %u", bp, size);
+    DE_PRINTF("place %u on %u", size, HEAP_SHIFT(bp));
     size_t total_size = BLOCK_SIZE(bp);
     size_t remainder = total_size - size;
 
@@ -276,13 +285,19 @@ static void *allocate_on_free_node(void *bp, size_t size)
         SET(FOOT(bp), PACK(total_size, 1));
     } else if (size >= LARGE_BLOCK_THR) {
         /* 对于大块，从后往前分配 */
+        DE_PRINTF("insert large block !");
         SET(HEAD(bp), PACK(remainder, 0));
         SET(FOOT(bp), PACK(remainder, 0));
-        insert_node(bp, remainder);
 
+        insert_node(bp, remainder);
         bp = NXT_BP(bp);
         SET(HEAD(bp), PACK(size, 1));
         SET(FOOT(bp), PACK(size, 1));
+
+        // SET(HEAD(NXT_BP(bp)), PACK(size, 1));  // 为何行为不同？
+        // SET(FOOT(NXT_BP(bp)), PACK(size, 1));
+        // insert_node(bp, remainder);
+        // return NXT_BP(bp);
     } else {
         SET(HEAD(bp), PACK(size, 1));
         SET(FOOT(bp), PACK(size, 1));
@@ -339,6 +354,7 @@ static void insert_node(void *bp, size_t size)
 {
     int list_i = ROUND2(size);
     list_i = MMIN(LIST_SIZE - 1, list_i);
+    DE_PRINTF("insert: %u, size=%u, list_i=%d", HEAP_SHIFT(bp), size, list_i);
 
     void *pre = NULL;
     void *nxt = segregated_free_lists[list_i];
@@ -353,7 +369,7 @@ static void insert_node(void *bp, size_t size)
     } else {
         SET(L_PRE_PTR(bp), NULL);
         segregated_free_lists[list_i] = bp;
-        DE_PRINTF("set list[%d]=%u", list_i, bp);
+        DE_PRINTF("set list[%d]=%u", list_i, HEAP_SHIFT(bp));
     }
     if (nxt != NULL) {
         SET(L_NXT_PTR(bp), nxt);
@@ -361,7 +377,8 @@ static void insert_node(void *bp, size_t size)
     } else {
         SET(L_NXT_PTR(bp), NULL);
     }
-    DE_PRINTF("insert: %u %u %u, size=%u", bp, L_PRE(bp), L_NXT(bp), size);
+    DE_PRINTF("after insert: %u, p=%u, n=%u, size=%u",
+              HEAP_SHIFT(bp), HEAP_SHIFT(L_PRE(bp)), HEAP_SHIFT(L_NXT(bp)), size);
 }
 
 static void delete_node(void *bp)
@@ -371,7 +388,8 @@ static void delete_node(void *bp)
 
     void *pre = L_PRE(bp);
     void *nxt = L_NXT(bp);
-    DE_PRINTF("delete: %u, list_i=%d, pre=%u, nxt=%u", bp, list_i, pre, nxt);
+    DE_PRINTF("delete: %u, p=%u, n=%u, list_i=%d",
+              HEAP_SHIFT(bp), HEAP_SHIFT(pre), HEAP_SHIFT(nxt), list_i);
 
     if (pre != NULL) {
         if (nxt != NULL) {
@@ -384,11 +402,10 @@ static void delete_node(void *bp)
         if (nxt != NULL) {
             SET(L_PRE_PTR(nxt), NULL);
             segregated_free_lists[list_i] = nxt;
-            DE_PRINTF("set list[%d]=%u", list_i, nxt);
+            DE_PRINTF("set list[%d]=%u", list_i, HEAP_SHIFT(nxt));
         } else {
             segregated_free_lists[list_i] = NULL;
             DE_PRINTF("set list[%d]=%u", list_i, NULL);
         }
     }
-    DE_PRINTF("after delete: list_head=%u", segregated_free_lists[list_i]);
 }
