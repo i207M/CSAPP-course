@@ -50,16 +50,18 @@ team_t team = {
 
 /* size of word (pointer) */
 #define WSIZE 4
-
 /* single word (4) or double word (8) alignment */
 #define ALIGNMENT 8
 
 /* size of segregated free list */
 #define LIST_SIZE 16
 
+/* 堆的初始大小 */
 #define INITCHUNKSIZE (1 << 6)
+/* 每次扩展堆的最小块大小 */
 #define CHUNKSIZE (1 << 13)
 
+/* the threshold of large chunk */
 #define LARGE_BLOCK_THR 96
 
 #define ALLOCATED 1
@@ -72,6 +74,7 @@ team_t team = {
 /* rounds up to the nearest multiple of ALIGNMENT */
 #define ALIGN(size) (((size) + (ALIGNMENT-1)) & ~0x7)
 
+/* rounds up to the nearest power of 2 */
 #define ROUND2(size) (31 - __builtin_clz(size))
 
 #define GET(ptr) (*(unsigned int *)(ptr))
@@ -90,10 +93,11 @@ team_t team = {
 /* 内存块的尾部地址 */
 #define FOOT(bp) ((char *)(bp) + BLOCK_SIZE(bp) - 2 * WSIZE)
 
-/* 指向物理内存上的前一块的指针 */
+/* 物理内存上的前一块的尾部的地址 */
 #define PRE_BP_FOOT(bp) ((char *)(bp) - 2 * WSIZE)
+/* 物理内存上的前一块的地址 */
 #define PRE_BP(bp) ((char *)(bp) - GET_SIZE(PRE_BP_FOOT(bp)))
-/* 指向物理内存上的后一块的指针 */
+/* 物理内存上的后一块的地址 */
 #define NXT_BP(bp) ((char *)(bp) + BLOCK_SIZE(bp))
 
 /* 指向逻辑链表上的前一块的指针 */
@@ -111,11 +115,16 @@ team_t team = {
 #define RI register int
 
 
-static void *allocate_on_free_node(void *ptr, size_t size);
+/* 划分空块 */
+static void *allocate_on_free_node(void *bp, size_t size);
+/* 扩展堆，获得新的空块 */
 static void *new_node(size_t size);
-static void insert_node(void *ptr, size_t size);
-static void delete_node(void *ptr);
-static void *coalesce(void *ptr);
+/* 将块插入列表 */
+static void insert_node(void *bp, size_t size);
+/* 将块从列表中删除 */
+static void delete_node(void *bp);
+/* 尝试将块与前后空块合并，默认 bp 未插入列表 */
+static void *coalesce(void *bp);
 
 static void *segregated_free_lists[LIST_SIZE];
 static void *heap_base = NULL;
@@ -137,7 +146,7 @@ int mm_init(void)
     SET(heap_base, PACK(0, ALLOCATED));  // 设置堆的首位，防止向前溢出
     SET((char *)heap_base + 1 * WSIZE, 0);  // 将堆的最后元素置零
 
-    if(new_node(INITCHUNKSIZE) == NULL) {
+    if(new_node(INITCHUNKSIZE) == NULL) {  // 初始化堆的大小为 INITCHUNKSIZE
         return -1;
     }
     return 0;
@@ -162,6 +171,7 @@ void *mm_malloc(size_t size)
             bp = segregated_free_lists[list_i];
 
             while((bp != NULL) && size > BLOCK_SIZE(bp)) {
+                /* 寻找第一个 >= size 的位置 */
                 bp = L_NXT(bp);
             }
             if(bp != NULL) {
@@ -170,14 +180,14 @@ void *mm_malloc(size_t size)
         }
     }
 
-    if (bp == NULL) {
+    if (bp == NULL) {  // 没找到，则申请新块
         bp = new_node(MMAX(size, CHUNKSIZE));
         if(bp == NULL) {
             return NULL;
         }
     }
 
-    bp = allocate_on_free_node(bp, size);
+    bp = allocate_on_free_node(bp, size);  // 从空块划分出 size
     return bp;
 }
 
@@ -201,7 +211,7 @@ void mm_free(void *bp)
 void *mm_realloc(void *bp, size_t size)
 {
     if(size == 0) {
-        mm_free(bp);  // NOTE
+        mm_free(bp);
         return NULL;
     }
 
@@ -212,8 +222,10 @@ void *mm_realloc(void *bp, size_t size)
     if (remainder >= 0) {
         return bp;
     } else if (!BLOCK_ALLOC(NXT_BP(bp)) || BLOCK_SIZE(NXT_BP(bp)) == 0) {
+        /* 如果后一块为空或堆顶 */
         remainder = BLOCK_SIZE(bp) + BLOCK_SIZE(NXT_BP(bp)) - size;
         if(remainder < 0) {
+            /* 如果空间不足，则申请新的堆空间 */
             if (new_node(MMAX(-remainder, CHUNKSIZE)) == NULL) {
                 return NULL;
             }
@@ -225,6 +237,7 @@ void *mm_realloc(void *bp, size_t size)
         SET(FOOT(bp), PACK(size + remainder, ALLOCATED));
         return bp;
     } else {
+        /* 申请一块新的空间 */
         void *new_bp = mm_malloc(size);
 
         size_t copy_size = BLOCK_SIZE(bp) - WSIZE;
@@ -249,7 +262,7 @@ static void *new_node(size_t size)
 
     SET(HEAD(NXT_BP(bp)), PACK(0, ALLOCATED));  // 设置后一块的头部，防止向后溢出
 
-    bp = coalesce(bp);
+    bp = coalesce(bp);  // 尝试前后合并
     insert_node(bp, BLOCK_SIZE(bp));
     return bp;
 }
@@ -262,6 +275,7 @@ static void *allocate_on_free_node(void *bp, size_t size)
     delete_node(bp);
 
     if(remainder < 4 * WSIZE) {
+        /* 如果剩余过小，无法单独成块 */
         SET(HEAD(bp), PACK(total_size, 1));
         SET(FOOT(bp), PACK(total_size, 1));
     } else if (size >= LARGE_BLOCK_THR) {
@@ -274,6 +288,7 @@ static void *allocate_on_free_node(void *bp, size_t size)
         SET(HEAD(bp), PACK(size, 1));
         SET(FOOT(bp), PACK(size, 1));
     } else {
+        /* 对于小块，从前往后分配 */
         SET(HEAD(bp), PACK(size, 1));
         SET(FOOT(bp), PACK(size, 1));
 
@@ -285,25 +300,27 @@ static void *allocate_on_free_node(void *bp, size_t size)
     return bp;
 }
 
-/*
- * coalesce  尝试与前后块合并，默认 bp 未插入
- */
 static void *coalesce(void *bp)
 {
     size_t size = BLOCK_SIZE(bp);
 
-    if (GET_ALLOC(PRE_BP_FOOT(bp))) {  // 前一块已分配，注意这里不能使用 BLOCK_ALLOC
+    if (GET_ALLOC(PRE_BP_FOOT(bp))) {  // 注意这里不能使用 BLOCK_ALLOC
+        /* 前一块已分配 */
         if (BLOCK_ALLOC(NXT_BP(bp))) {
-            ;  // do nothing
+            /* 后一块已分配 */
+            /* do nothing */
         } else {
+            /* 后一块未分配 */
             size += BLOCK_SIZE(NXT_BP(bp));
             delete_node(NXT_BP(bp));
 
             SET(HEAD(bp), PACK(size, 0));
             SET(FOOT(bp), PACK(size, 0));
         }
-    } else {  // 前一块未分配
+    } else {
+        /* 前一块未分配 */
         if (BLOCK_ALLOC(NXT_BP(bp))) {
+            /* 后一块已分配 */
             bp = PRE_BP(bp);
             size += BLOCK_SIZE(bp);
             delete_node(bp);
@@ -311,6 +328,7 @@ static void *coalesce(void *bp)
             SET(HEAD(bp), PACK(size, 0));
             SET(FOOT(bp), PACK(size, 0));
         } else {
+            /* 后一块未分配 */
             size += BLOCK_SIZE(PRE_BP(bp)) + BLOCK_SIZE(NXT_BP(bp));
             delete_node(PRE_BP(bp));
             delete_node(NXT_BP(bp));
@@ -331,6 +349,7 @@ static void insert_node(void *bp, size_t size)
     void *pre = NULL;
     void *nxt = segregated_free_lists[list_i];
     while(nxt != NULL && size > BLOCK_SIZE(nxt)) {
+        /* 找到 bp 应该插入的合适位置，维持列表有序 */
         pre = nxt;
         nxt = L_NXT(nxt);
     }
