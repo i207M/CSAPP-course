@@ -1,7 +1,14 @@
 /*
- * mm.c - The full-mark malloc package.
+ * mm.c - The lightning-fast malloc package with excellent memory efficiency.
  *
- * In this approach, we apply segregated free lists.
+ * 这里我采用的方法是“分离的空闲列表”（segregated free lists），灵感来源于CSAPP 9.9.14。
+ * 它的思想是，维护多个有序的空闲列表，其中每个链表中的块有大致相等的大小。
+ * 这里我使用按照2的幂来划分块的大小，即`{1}, {2, 3}, {4, 5, 6, 7}, ...`这样分组。
+ * 对于每组，维护一个空闲列表，列表内按照块大小升序排序。
+ * 当尝试分配一个大小为 n 的块时，查找到 n 所属的空闲列表，然后遍历并找到第一个大于等于 n 的块；
+ * 如果没有，则去更大的列表里找。
+ *
+ * 对于更多介绍，请见 `report.md`
  *
  * NOTE TO STUDENTS: Replace this header comment with your own header
  * comment that gives a high level description of your solution.
@@ -221,20 +228,23 @@ void *mm_realloc(void *bp, size_t size)
     int remainder = BLOCK_SIZE(bp) - size;
     if (remainder >= 0) {
         return bp;
-    } else if (!BLOCK_ALLOC(NXT_BP(bp)) || BLOCK_SIZE(NXT_BP(bp)) == 0) {
-        /* 如果后一块为空或堆顶 */
-        remainder = BLOCK_SIZE(bp) + BLOCK_SIZE(NXT_BP(bp)) - size;
-        if(remainder < 0) {
-            /* 如果空间不足，则申请新的堆空间 */
-            if (new_node(MMAX(-remainder, CHUNKSIZE)) == NULL) {
-                return NULL;
-            }
-            remainder += MMAX(-remainder, CHUNKSIZE);
+    } else if (BLOCK_SIZE(NXT_BP(bp)) == 0) {
+        /* 如果后一块为堆顶，则申请新的堆空间 */
+        if (new_node(MMAX(-remainder, CHUNKSIZE)) == NULL) {
+            return NULL;
         }
+        remainder += MMAX(-remainder, CHUNKSIZE);
 
         delete_node(NXT_BP(bp));
-        SET(HEAD(bp), PACK(size + remainder, ALLOCATED));  // 这里将新申请的空间全部realloc
+        SET(HEAD(bp), PACK(size + remainder, ALLOCATED));
         SET(FOOT(bp), PACK(size + remainder, ALLOCATED));
+        return bp;
+    } else if (!BLOCK_ALLOC(NXT_BP(bp)) && BLOCK_SIZE(bp) + BLOCK_SIZE(NXT_BP(bp)) >= size) {
+        /* 如果后一块为空，且空间充足 */
+        size = BLOCK_SIZE(bp) + BLOCK_SIZE(NXT_BP(bp));
+        delete_node(NXT_BP(bp));
+        SET(HEAD(bp), PACK(size, ALLOCATED));
+        SET(FOOT(bp), PACK(size, ALLOCATED));
         return bp;
     } else {
         /* 申请一块新的空间 */
