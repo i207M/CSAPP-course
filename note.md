@@ -105,6 +105,8 @@ Total          96%  112372  0.005772 19469
 Perf index = 58 (util) + 40 (thru) = 98/100
 ```
 
+1 << 12
+
 ```
 Results for mm malloc:
 trace  valid  util     ops      secs  Kops
@@ -122,4 +124,23 @@ trace  valid  util     ops      secs  Kops
 Total          97%  112372  0.010757 10447
 
 Perf index = 58 (util) + 40 (thru) = 98/100
+```
+
+1 << 12，大前小后
+
+```
+Results for mm malloc:
+trace  valid  util     ops      secs  Kops
+ 0       yes   99%    5694  0.000468 12164
+ 1       yes   99%    5848  0.000256 22808
+ 2       yes  100%    6648  0.000318 20939
+ 3       yes  100%    5380  0.000257 20909
+ 4       yes  100%   14400  0.000261 55151
+ 5       yes   96%    4800  0.000870  5520
+ 6       yes   95%    4800  0.000772  6218
+ 7       yes   96%   12000  0.000792 15155
+ 8       yes   88%   24000  0.005689  4218
+ 9       yes   99%   14401  0.000231 62423
+10       yes   98%   14401  0.000221 65222
+Total          97%  112372  0.010135 11088
 ```
